@@ -3,6 +3,8 @@ import SwiftUI
 struct HomeView: View {
     @ObservedObject var viewModel: HomeViewModel
     
+    @State private var selectedNewsForDetail: SportNews? = nil
+    
     var body: some View {
         VStack(spacing: 0) {
             // 1. App Bar (Chỉ có Logo Text)
@@ -17,6 +19,10 @@ struct HomeView: View {
         .background(Color(.systemGray6).edgesIgnoringSafeArea(.all)) // Chuyển sang Gray6 để phân biệt nền Card trắng
         .task {
             await viewModel.initializeHomeData()
+        }
+        // THÊM MODIFIER NÀY ĐỂ HIỂN THỊ WEBVIEW DẠNG MODAL FULL SCREEN
+        .fullScreenCover(item: $selectedNewsForDetail) { news in
+            NewsDetailView(news: news)
         }
     }
     
@@ -72,7 +78,9 @@ struct HomeView: View {
                 VStack(spacing: 16) {
                     // 1. Featured Banner (Tin lớn nhất)
                     if let featured = viewModel.featuredNews {
-                        FeaturedCardView(news: featured)
+                        FeaturedCardView(news: featured).onTapGesture {
+                            selectedNewsForDetail = featured // Click tin nổi bật
+                        }
                     }
                     
                     // 2. List tin tức phía dưới
@@ -97,6 +105,9 @@ struct HomeView: View {
                                             await viewModel.loadMoreNews()
                                         }
                                     }
+                                }
+                                .onTapGesture {
+                                    selectedNewsForDetail = news // Click tin
                                 }
                         }
                     }
