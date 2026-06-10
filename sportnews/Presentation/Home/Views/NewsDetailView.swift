@@ -54,30 +54,25 @@ struct NewsDetailView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
                 // 3. Nút Share
-                Button(action: {
-                    shareArticle(url: news.id)
-                }) {
+                if let shareUrl = URL(string: news.id) {
+                    ShareLink(item: shareUrl, subject: Text(news.title)) {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.system(size: 18, weight: .medium))
+                            .foregroundColor(.black)
+                            .frame(width: 44, height: 44)
+                    }
+                } else {
+                    // Khởi tạo nút disable phòng trường hợp url lỗi
                     Image(systemName: "square.and.arrow.up")
                         .font(.system(size: 18, weight: .medium))
-                        .foregroundColor(.black)
+                        .foregroundColor(.gray)
+                        .frame(width: 44, height: 44)
                 }
-                .frame(width: 44, height: 44)
             }
             .padding(.horizontal, 8)
             
             Divider()
         }
         .background(Color.white)
-    }
-    
-    // Helper kích hoạt UIActivityViewController để chia sẻ link bài viết
-    private func shareArticle(url: String) {
-        guard let shareUrl = URL(string: url) else { return }
-        let activityVC = UIActivityViewController(activityItems: [shareUrl], applicationActivities: nil)
-        
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let rootVC = windowScene.windows.first?.rootViewController {
-            rootVC.present(activityVC, animated: true)
-        }
     }
 }
