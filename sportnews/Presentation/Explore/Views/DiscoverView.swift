@@ -1,0 +1,155 @@
+//
+//  DiscoverView.swift
+//  sportnews
+//
+//  Created by Nguyen Tuan Vu on 10/6/26.
+//
+
+import SwiftUI
+
+struct DiscoverView: View {
+    
+    @StateObject var viewModel: DiscoverViewModel
+    @State private var selectedNews: SportNews? = nil
+    
+    private let columns = [
+        GridItem(.flexible(), spacing: 12),
+        GridItem(.flexible(), spacing: 12)
+    ]
+    
+    var body: some View {
+        VStack (spacing: 0) {
+            discoverHeader
+            
+            buildBody
+        }
+        .background(Color.white)
+        .task {
+            await viewModel.loadDiscoverData()
+        }
+        .fullScreenCover(item: $selectedNews) { news in
+            NewsDetailView(news: news)
+        }
+    }
+    
+    // MARK: - Body Views
+    private var buildBody: some View {
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 20) {
+                searchBarInput
+                
+                quickTagsSection
+                
+                if viewModel.isLoading {
+                    ProgressView()
+                        .padding(.top, 40)
+                } else {
+                    discoverSectionsList
+                }
+            }.padding(.vertical, 16)
+        }
+    }
+    
+    private var discoverSectionsList: some View {
+        LazyVStack(spacing: 24) {
+            ForEach(viewModel.sections) { section in
+                VStack(spacing: 12) {
+                    HStack {
+                        Text(section.title)
+                            .font(.system(size: 16, weight: .bold))
+                        Spacer()
+                        Button(action: {}) {
+                            Text("Xem tất cả >").font(.system(size: 14)).foregroundColor(.red)
+                        }
+                    }
+                    .padding(.horizontal)
+                    
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        LazyHStack(spacing: 16) {
+                            ForEach(section.articles) { news in
+                                DiscoverCardItem(news: news)
+                                    .frame(width: 220)
+                                    .onTapGesture {
+                                        selectedNews = news
+                                    }
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                }
+            }
+        }
+    }
+    
+    private var quickTagsSection: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(viewModel.quickTags, id: \.self) { tag in
+                    Text(tag)
+                        .font(.system(size: 13, weight: .medium))
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 8)
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                }
+            }
+            .padding(.horizontal)
+        }
+    }
+    
+    // MARK: - Subviews
+    private var discoverHeader: some View {
+        HStack {
+            Text("SportNews")
+                .font(.system(size: 28, weight: .black, design: .rounded))
+                .foregroundColor(Color(red: 0.8, green: 0.1, blue: 0.1))
+            Spacer()
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(Color(red: 0.8, green: 0.1, blue: 0.1))
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 12)
+    }
+    
+    private var searchBarInput: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass").foregroundColor(.gray)
+            TextField("Tìm kiếm giải đấu, đội bóng, vận động viên", text: $viewModel.searchText)
+                .font(.system(size: 14))
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(Color(.systemGray6))
+        .cornerRadius(10)
+        .padding(.horizontal)
+    }
+    
+    
+    
+}
+
+struct DiscoverCardItem: View {
+    let news: SportNews
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            AsyncImage(url: URL(string: news.imageUrl)) { image in
+                image.resizable().aspectRatio(contentMode: .fill)
+            } placeholder: {
+                Color.gray.opacity(0.1)
+            }
+            .frame(height: 110).frame(maxWidth: .infinity).cornerRadius(8).clipped()
+            
+            Text(news.title)
+                .font(.system(size: 14, weight: .bold))
+                .lineLimit(2)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+            
+            Text(news.category)
+                .font(.system(size: 11))
+                .foregroundColor(.secondary)
+        }
+    }
+}

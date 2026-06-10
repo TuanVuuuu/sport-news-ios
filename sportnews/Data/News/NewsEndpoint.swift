@@ -3,6 +3,7 @@ import Foundation
 enum NewsEndpoint: APIEndpoint {
     case getNews(category: String, page: Int, limit: Int)
     case getCategories(type: String)
+    case getDiscover
     
     var path: String {
         switch self {
@@ -11,7 +12,12 @@ enum NewsEndpoint: APIEndpoint {
             
         case .getCategories:
             return "api/categories"
+            
+        case .getDiscover:
+            return "api/discover"
         }
+        
+        
     }
     
     var method: HTTPMethod {
@@ -21,6 +27,9 @@ enum NewsEndpoint: APIEndpoint {
             
             
         case .getCategories:
+            return .get
+            
+        case .getDiscover:
             return .get
         }
     }
@@ -37,7 +46,12 @@ enum NewsEndpoint: APIEndpoint {
             
         case .getCategories(let type):
             return ["type": type]
+            
+        case .getDiscover:
+            return nil
         }
+        
+        
     }
     
     var bodyParameters: [String : Any]? {

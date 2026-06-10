@@ -9,8 +9,14 @@ import SwiftUI
 
 struct MainTabView: View {
     private let homeView: HomeView
+    private var discoverView: DiscoverView
     
     init() {
+        self.homeView = Self.createHomeView()
+        self.discoverView = Self.createDiscoverView()
+    }
+    
+    private static func createHomeView() -> HomeView {
         let homeRepository = HomeRepository()
         
         let newsUseCase  = GetHomeNewsUseCase(repository: homeRepository)
@@ -21,7 +27,14 @@ struct MainTabView: View {
             getHomeCategoriesUseCase: categoriesUseCase
         )
         
-        self.homeView = HomeView(viewModel: viewModel)
+        return HomeView(viewModel: viewModel)
+    }
+    
+    private static func createDiscoverView() -> DiscoverView {
+        let discoverRepository = DiscoverRepository()
+        let discoverUseCase = GetDiscoverUseCase(repository: discoverRepository)
+        let viewModel = DiscoverViewModel(getDiscoverUseCase: discoverUseCase)
+        return DiscoverView(viewModel: viewModel)
     }
     
     var body: some View {
@@ -31,7 +44,7 @@ struct MainTabView: View {
                     Label("Trang chủ", systemImage: "house.fill")
                 }
             
-            Text("Màn hình khám phá")
+            discoverView
                 .tabItem {
                     Label("Khám phá", systemImage: "safari.fill")
                 }
