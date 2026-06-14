@@ -25,6 +25,7 @@ struct DiscoverView: View {
         }
         .background(Color.white)
         .task {
+            await viewModel.loadKeywordsSuggestions()
             await viewModel.loadDiscoverData()
         }
         .fullScreenCover(item: $selectedNews) { news in
@@ -84,13 +85,21 @@ struct DiscoverView: View {
     private var quickTagsSection: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                ForEach(viewModel.quickTags, id: \.self) { tag in
-                    Text(tag)
+                ForEach(viewModel.keywordSuggestions) { tag in
+                    Text(tag.keyword)
                         .font(.system(size: 13, weight: .medium))
                         .padding(.horizontal, 14)
                         .padding(.vertical, 8)
                         .background(Color(.systemGray6))
                         .cornerRadius(8)
+                        .onTapGesture {
+                            viewModel.selectedSearchText(text: tag.keyword)
+                            Task {
+                                await viewModel.searchDiscoverByKeyword(
+                                    text: viewModel.searchText
+                                )
+                            }
+                        }
                 }
             }
             .padding(.horizontal)
@@ -117,6 +126,14 @@ struct DiscoverView: View {
             Image(systemName: "magnifyingglass").foregroundColor(.gray)
             TextField("Tìm kiếm giải đấu, đội bóng, vận động viên", text: $viewModel.searchText)
                 .font(.system(size: 14))
+                .submitLabel(.search)
+                .onSubmit {
+                    Task {
+                        await viewModel.searchDiscoverByKeyword(
+                            text: viewModel.searchText
+                        )
+                    }
+                }
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)

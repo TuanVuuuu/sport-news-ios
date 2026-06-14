@@ -33,7 +33,11 @@ struct MainTabView: View {
     private static func createDiscoverView() -> DiscoverView {
         let discoverRepository = DiscoverRepository()
         let discoverUseCase = GetDiscoverUseCase(repository: discoverRepository)
-        let viewModel = DiscoverViewModel(getDiscoverUseCase: discoverUseCase)
+        let keywordSuggestionsUseCase = GetKeywordSuggestionsUseCase(repository: discoverRepository)
+        let viewModel = DiscoverViewModel(
+            getDiscoverUseCase: discoverUseCase,
+            getKeywordSuggestionsUseCase: keywordSuggestionsUseCase
+        )
         return DiscoverView(viewModel: viewModel)
     }
     

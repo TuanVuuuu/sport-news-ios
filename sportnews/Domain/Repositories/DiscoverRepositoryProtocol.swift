@@ -9,4 +9,8 @@ import Foundation
 
 protocol DiscoverRepositoryProtocol {
     func fetchDiscoverData() async throws -> [DiscoverSection]
+    
+    func fetchKeywordSuggestions() async throws -> [KeywordSuggestions]
+    
+    func fetchNewsSearchData(text: String) async throws -> [DiscoverSection]
 }

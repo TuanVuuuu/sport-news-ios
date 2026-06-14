@@ -4,6 +4,8 @@ enum NewsEndpoint: APIEndpoint {
     case getNews(category: String, page: Int, limit: Int)
     case getCategories(type: String)
     case getDiscover
+    case getSuggestions(limit: Int)
+    case getNewsSearch(page: Int, size: Int, text: String)
     
     var path: String {
         switch self {
@@ -15,6 +17,13 @@ enum NewsEndpoint: APIEndpoint {
             
         case .getDiscover:
             return "api/discover"
+            
+        case .getSuggestions:
+            return "api/search/suggestions"
+            
+        case .getNewsSearch:
+            return "api/news/search"
+            
         }
         
         
@@ -30,6 +39,12 @@ enum NewsEndpoint: APIEndpoint {
             return .get
             
         case .getDiscover:
+            return .get
+            
+        case .getSuggestions:
+            return .get
+            
+        case .getNewsSearch:
             return .get
         }
     }
@@ -49,6 +64,18 @@ enum NewsEndpoint: APIEndpoint {
             
         case .getDiscover:
             return nil
+            
+        case .getSuggestions(let limit):
+            return [
+                "limit": limit
+            ]
+            
+        case .getNewsSearch(let page, let size, let text):
+            return [
+                "page": page,
+                "size": size,
+                "text": text
+            ]
         }
         
         
