@@ -38,13 +38,14 @@ struct DiscoverItemDTO: Decodable {
     let source: String?
     let thumbnail_url: String?
     let subCategory: String?
+    let published_at: String?
     
     func toEntity() -> SportNews {
         return SportNews(
             id: id ?? UUID().uuidString,
             title: title ?? "",
             source: source ?? "",
-            timeAgo: subCategory ?? "",
+            timeAgo: (published_at ?? "").toRelativeTimeString(),
             category: "", // Khám phá không hiển thị thời gian thì để trống
             imageUrl: thumbnail_url ?? "",
             isFeatured: subCategory == "Featured"

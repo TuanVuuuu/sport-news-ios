@@ -47,6 +47,7 @@ class DiscoverViewModel: ObservableObject {
     }
     
     func searchDiscoverByKeyword(text: String) async {
+        self.isLoading = true
         do {
             let query = text.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !query.isEmpty else {
@@ -58,6 +59,7 @@ class DiscoverViewModel: ObservableObject {
         } catch {
             print("Error: \(error.localizedDescription)")
         }
+        self.isLoading = false
     }
     
     func selectedSearchText(text: String) {

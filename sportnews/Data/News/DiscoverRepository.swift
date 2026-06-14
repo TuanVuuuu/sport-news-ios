@@ -25,7 +25,7 @@ struct DiscoverRepository: DiscoverRepositoryProtocol {
     }
     
     func fetchKeywordSuggestions() async throws -> [KeywordSuggestions] {
-        let endpoint = NewsEndpoint.getSuggestions(limit: 10)
+        let endpoint = NewsEndpoint.getSuggestions(limit: 7)
         
         let apiResponse: GetKeywordSuggestionsResponseDTO = try await
         self.networkService.request(endpoint)

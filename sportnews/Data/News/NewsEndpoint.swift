@@ -25,8 +25,6 @@ enum NewsEndpoint: APIEndpoint {
             return "api/news/search"
             
         }
-        
-        
     }
     
     var method: HTTPMethod {

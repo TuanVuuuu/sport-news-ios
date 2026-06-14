@@ -56,7 +56,7 @@ struct DiscoverView: View {
             ForEach(viewModel.sections) { section in
                 VStack(spacing: 12) {
                     HStack {
-                        Text(section.title)
+                        Text(section.title.uppercased())
                             .font(.system(size: 16, weight: .bold))
                         Spacer()
                         Button(action: {}) {
@@ -83,27 +83,26 @@ struct DiscoverView: View {
     }
     
     private var quickTagsSection: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(viewModel.keywordSuggestions) { tag in
+        FlowLayout(spacing: 8, lineSpacing: 8) {
+            ForEach(viewModel.keywordSuggestions) { tag in
+                Button {
+                    viewModel.selectedSearchText(text: tag.keyword)
+                    Task {
+                        await viewModel.searchDiscoverByKeyword(text: viewModel.searchText)
+                    }
+                } label: {
                     Text(tag.keyword)
                         .font(.system(size: 13, weight: .medium))
                         .padding(.horizontal, 14)
                         .padding(.vertical, 8)
                         .background(Color(.systemGray6))
                         .cornerRadius(8)
-                        .onTapGesture {
-                            viewModel.selectedSearchText(text: tag.keyword)
-                            Task {
-                                await viewModel.searchDiscoverByKeyword(
-                                    text: viewModel.searchText
-                                )
-                            }
-                        }
                 }
+                .buttonStyle(.plain)
             }
-            .padding(.horizontal)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal)
     }
     
     // MARK: - Subviews
@@ -134,6 +133,20 @@ struct DiscoverView: View {
                         )
                     }
                 }
+            
+            if !viewModel.searchText.isEmpty {
+                Button {
+                    viewModel.searchText = ""
+                    Task {
+                        await viewModel.loadDiscoverData()
+                    }
+                } label: {
+                    Image(systemName: "xmark.circle")
+                        .font(.system(size: 16))
+                        .foregroundColor(.gray)
+                }
+                .buttonStyle(.plain) // tránh style mặc định của Button
+            }
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
@@ -164,7 +177,7 @@ struct DiscoverCardItem: View {
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
             
-            Text(news.category)
+            Text("\(news.source) • \(news.timeAgo)")
                 .font(.system(size: 11))
                 .foregroundColor(.secondary)
         }

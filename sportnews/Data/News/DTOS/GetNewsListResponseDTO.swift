@@ -42,21 +42,10 @@ struct NewsArticleDTO: Decodable {
             id: self.id,
             title: self.title ?? "",
             source: self.source ?? "Tin tức",
-            timeAgo: parsePublishedDate(self.published_at ?? ""),
+            timeAgo: (self.published_at ?? "").toRelativeTimeString(),
             category: self.category_name ?? "Thể thao",
             imageUrl: self.thumbnail_url ?? "",
             isFeatured: isFeatured
         )
-    }
-
-    
-    /// Logic xử lý hiển thị thời gian thô từ API (Ví dụ: "Sat, 06 Jun 2026 19:11:43 +0700")
-    private func parsePublishedDate(_ dateString: String) -> String {
-        // Cách xử lý nhanh bằng cắt chuỗi để lấy giờ: "19:11:43"
-        let components = dateString.components(separatedBy: " ")
-        if components.count > 4 {
-            return "\(components[4])"
-        }
-        return "Vừa xong"
     }
 }
