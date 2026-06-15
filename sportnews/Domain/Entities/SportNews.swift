@@ -1,7 +1,7 @@
 // Domain/Entities/SportNews.swift
 import Foundation
 
-struct SportNews: Identifiable {
+struct SportNews: Hashable, Identifiable {
     let id: String
     let title: String
     let source: String        // Nguồn tin (VnExpress, Soha...)

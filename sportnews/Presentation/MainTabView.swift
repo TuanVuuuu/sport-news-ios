@@ -8,56 +8,47 @@
 import SwiftUI
 
 struct MainTabView: View {
-    private let homeView: HomeView
-    private var discoverView: DiscoverView
-    
+    @StateObject private var router: AppRouter
+    @State private var factory: NavigationFactory
+
     init() {
-        self.homeView = Self.createHomeView()
-        self.discoverView = Self.createDiscoverView()
+        let router = AppRouter()
+        _router = StateObject(wrappedValue: router)
+        _factory = State(initialValue: NavigationFactory(router: router))
     }
-    
-    private static func createHomeView() -> HomeView {
-        let homeRepository = HomeRepository()
-        
-        let newsUseCase  = GetHomeNewsUseCase(repository: homeRepository)
-        let categoriesUseCase = GetHomeCategoriesUseCase(repository: homeRepository)
-        
-        let viewModel = HomeViewModel(
-            getHomeNewsUseCase: newsUseCase,
-            getHomeCategoriesUseCase: categoriesUseCase
-        )
-        
-        return HomeView(viewModel: viewModel)
-    }
-    
-    private static func createDiscoverView() -> DiscoverView {
-        let discoverRepository = DiscoverRepository()
-        let discoverUseCase = GetDiscoverUseCase(repository: discoverRepository)
-        let keywordSuggestionsUseCase = GetKeywordSuggestionsUseCase(repository: discoverRepository)
-        let viewModel = DiscoverViewModel(
-            getDiscoverUseCase: discoverUseCase,
-            getKeywordSuggestionsUseCase: keywordSuggestionsUseCase
-        )
-        return DiscoverView(viewModel: viewModel)
-    }
-    
+
     var body: some View {
-        TabView {
-            homeView
-                .tabItem {
-                    Label("Trang chủ", systemImage: "house.fill")
-                }
-            
-            discoverView
-                .tabItem {
-                    Label("Khám phá", systemImage: "safari.fill")
-                }
-            
-            Text("Màn hình cá nhân")
-                .tabItem {
-                    Label("Cá nhân", systemImage: "person.fill")
-                }
+        NavigationStack(path: $router.navigationPath) {
+            TabView(selection: $router.selectedTab) {
+                factory.makeHomeView()
+                    .tabItem {
+                        Label(AppTab.home.title, systemImage: AppTab.home.systemImage)
+                    }
+                    .tag(AppTab.home)
+
+                factory.makeDiscoverView()
+                    .tabItem {
+                        Label(AppTab.discover.title, systemImage: AppTab.discover.systemImage)
+                    }
+                    .tag(AppTab.discover)
+
+                factory.makeProfileView()
+                    .tabItem {
+                        Label(AppTab.profile.title, systemImage: AppTab.profile.systemImage)
+                    }
+                    .tag(AppTab.profile)
+            }
+            .accentColor(Color(red: 0.7, green: 0.1, blue: 0.1))
+            .toolbar(.hidden, for: .navigationBar)
+            .navigationDestination(for: AppRoute.self) { route in
+                factory.pushDestination(for: route)
+                    .environmentObject(router)
+            }
         }
-        .accentColor(Color(red: 0.7, green: 0.1, blue: 0.1))
+        .environmentObject(router)
+        .fullScreenCover(item: $router.fullScreenRoute) { route in
+            factory.destination(for: route)
+                .environmentObject(router)
+        }
     }
 }

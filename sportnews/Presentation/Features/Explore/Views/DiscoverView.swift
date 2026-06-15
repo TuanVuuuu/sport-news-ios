@@ -8,15 +8,9 @@
 import SwiftUI
 
 struct DiscoverView: View {
-    
-    @StateObject var viewModel: DiscoverViewModel
-    @State private var selectedNews: SportNews? = nil
-    
-    private let columns = [
-        GridItem(.flexible(), spacing: 12),
-        GridItem(.flexible(), spacing: 12)
-    ]
-    
+    @ObservedObject var viewModel: DiscoverViewModel
+    @EnvironmentObject private var router: AppRouter
+
     var body: some View {
         VStack (spacing: 0) {
             discoverHeader
@@ -24,12 +18,11 @@ struct DiscoverView: View {
             buildBody
         }
         .background(Color.white)
+        .toolbar(.hidden, for: .navigationBar)
         .task {
+            guard viewModel.sections.isEmpty else { return }
             await viewModel.loadKeywordsSuggestions()
             await viewModel.loadDiscoverData()
-        }
-        .fullScreenCover(item: $selectedNews) { news in
-            NewsDetailView(news: news)
         }
     }
     
@@ -59,7 +52,9 @@ struct DiscoverView: View {
                         Text(section.title.uppercased())
                             .font(.system(size: 16, weight: .bold))
                         Spacer()
-                        Button(action: {}) {
+                        Button {
+                            router.showDiscoverSectionList(section)
+                        } label: {
                             Text("Xem tất cả >").font(.system(size: 14)).foregroundColor(.red)
                         }
                     }
@@ -71,7 +66,7 @@ struct DiscoverView: View {
                                 DiscoverCardItem(news: news)
                                     .frame(width: 220)
                                     .onTapGesture {
-                                        selectedNews = news
+                                        router.showNewsDetail(news)
                                     }
                             }
                         }

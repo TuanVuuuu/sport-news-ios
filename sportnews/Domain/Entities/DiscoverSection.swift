@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DiscoverSection: Identifiable {
+struct DiscoverSection: Identifiable, Hashable {
     let id: String
     let title: String
     let articles: [SportNews]

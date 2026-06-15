@@ -2,9 +2,8 @@ import SwiftUI
 
 struct HomeView: View {
     @ObservedObject var viewModel: HomeViewModel
-    
-    @State private var selectedNewsForDetail: SportNews? = nil
-    
+    @EnvironmentObject private var router: AppRouter
+
     var body: some View {
         VStack(spacing: 0) {
             // 1. App Bar (Chỉ có Logo Text)
@@ -18,11 +17,8 @@ struct HomeView: View {
         }
         .background(Color(.systemGray6).edgesIgnoringSafeArea(.all)) // Chuyển sang Gray6 để phân biệt nền Card trắng
         .task {
+            guard viewModel.newsList.isEmpty else { return }
             await viewModel.initializeHomeData()
-        }
-        // THÊM MODIFIER NÀY ĐỂ HIỂN THỊ WEBVIEW DẠNG MODAL FULL SCREEN
-        .fullScreenCover(item: $selectedNewsForDetail) { news in
-            NewsDetailView(news: news)
         }
     }
     
@@ -79,7 +75,7 @@ struct HomeView: View {
                     // 1. Featured Banner (Tin lớn nhất)
                     if let featured = viewModel.featuredNews {
                         FeaturedCardView(news: featured).onTapGesture {
-                            selectedNewsForDetail = featured // Click tin nổi bật
+                            router.showNewsDetail(featured)
                         }
                     }
                     
@@ -107,7 +103,7 @@ struct HomeView: View {
                                     }
                                 }
                                 .onTapGesture {
-                                    selectedNewsForDetail = news // Click tin
+                                    router.showNewsDetail(news)
                                 }
                         }
                     }

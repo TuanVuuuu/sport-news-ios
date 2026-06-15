@@ -9,9 +9,8 @@ import SwiftUI
 
 struct NewsDetailView: View {
     let news: SportNews
-    
-    @Environment(\.dismiss) var dismiss
-    
+    @EnvironmentObject private var router: AppRouter
+
     var body: some View {
         VStack(spacing: 0) {
             // Custom Navigation Bar chuẩn theo Mockup V2
@@ -37,9 +36,7 @@ struct NewsDetailView: View {
         VStack(spacing: 4) {
             HStack {
                 // 1. Nút Đóng (X)
-                Button(action: {
-                    dismiss()
-                }) {
+                Button(action: close) {
                     Image(systemName: "xmark")
                         .font(.system(size: 18, weight: .medium))
                         .foregroundColor(.black)
@@ -74,5 +71,9 @@ struct NewsDetailView: View {
             Divider()
         }
         .background(Color.white)
+    }
+
+    private func close() {
+        router.dismissFullScreen()
     }
 }
