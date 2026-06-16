@@ -9,25 +9,57 @@ import SwiftUI
 
 struct DiscoverCategoryViewAllView: View {
     let section: DiscoverSection
+    @ObservedObject var viewModel: DiscoverCategoryViewAllViewModel
     @EnvironmentObject private var router: AppRouter
     
-    @ObservedObject var viewModel: DiscoverViewModel
-
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 16) {
-                ForEach(section.articles) { news in
-                    NewsRowView(news: news)
-                        .onTapGesture {
-                            router.showNewsDetail(news)
-                        }
-                }
-            }
-            .padding(.horizontal)
-            .padding(.vertical, 16)
+        VStack(spacing: 16) {
+            contentsView
         }
+        .padding(.horizontal)
+        .padding(.vertical, 16)
         .background(Color.white)
         .navigationTitle(section.title)
         .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    private var contentsView: some View {
+        let newsListForCategory = viewModel.news.isEmpty ? section.articles : viewModel.news
+        return ScrollView  {
+            
+            LazyVStack(spacing: 24) {
+                ForEach(newsListForCategory) { new in
+                    NewsRowView(news: new)
+                        .onAppear {
+                            let totalItems = viewModel.news.count
+                            
+                            // Kích hoạt sớm khi người dùng cuộn tới phần tử thứ (Tổng - 4)
+                            if totalItems >= 4 {
+                                let triggerIndex = totalItems - 4
+                                if new.id == viewModel.news[triggerIndex].id {
+                                    _Concurrency.Task {
+                                        await viewModel.loadMoreNews(idCategory: section.id)
+                                    }
+                                }
+                            } else if new.id == viewModel.news.last?.id {
+                                // Phòng trường hợp danh sách quá ngắn (ít hơn 3 phần tử), vẫn cho phép ăn theo item cuối
+                                _Concurrency.Task {
+                                    await viewModel.loadMoreNews(idCategory: section.id)
+                                }
+                            }
+                        }
+                        .onTapGesture {
+                            router.showNewsDetail(new)
+                        }
+                }
+                // Vòng xoay Loading khi kéo cuối trang (Load more)
+                if viewModel.isLoadMoreLoading {
+                    ProgressView()
+                        .padding(.vertical, 12)
+                }
+            }
+        }.refreshable {
+            await viewModel.refreshNews(idCategory: section.id)
+        }
     }
 }

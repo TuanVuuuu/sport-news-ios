@@ -17,6 +17,8 @@ class DiscoverViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var sections: [DiscoverSection] = []
     @Published var keywordSuggestions: [KeywordSuggestions] = []
+
+
     
     init(
         getDiscoverUseCase: GetDiscoverUseCase,
@@ -25,6 +27,7 @@ class DiscoverViewModel: ObservableObject {
         self.getDiscoverUseCase = getDiscoverUseCase
         self.getKeywordSuggestionsUseCase = getKeywordSuggestionsUseCase
     }
+    
     
     func loadDiscoverData() async {
         self.isLoading = true
@@ -37,6 +40,7 @@ class DiscoverViewModel: ObservableObject {
         }
         self.isLoading = false
     }
+    
     
     func loadKeywordsSuggestions() async {
         do {
