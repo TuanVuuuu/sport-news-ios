@@ -6,16 +6,12 @@ struct HomeView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // 1. App Bar (Chỉ có Logo Text)
             appBar
-            
-            // 2. Thanh chọn Category (Tab ngang)
+            fixturesSection
             categorySelector
-            
-            // 3. Danh sách tin tức
             homeNews
         }
-        .background(Color(.systemGray6).edgesIgnoringSafeArea(.all)) // Chuyển sang Gray6 để phân biệt nền Card trắng
+        .background(Color(.systemGray6).edgesIgnoringSafeArea(.all))
         .task {
             guard viewModel.newsList.isEmpty else { return }
             await viewModel.initializeHomeData()
@@ -58,7 +54,22 @@ struct HomeView: View {
             .padding(.horizontal)
             .padding(.vertical, 12)
         }
-        .background(Color.white)
+    }
+    
+    @ViewBuilder
+    private var fixturesSection: some View {
+        if let schedule = viewModel.worldCupSchedule,
+           let upcomingDay = viewModel.nearestUpcomingFixtureDay {
+            WorldCupFixturesPreviewSection(
+                schedule: schedule,
+                day: upcomingDay,
+                onSeeMore: {
+                    router.showWorldCupFixtures(schedule)
+                }
+            )
+//            .padding(.top, 12)
+//            .background(Color(.systemGray6))
+        }
     }
     
     @ViewBuilder
@@ -72,7 +83,6 @@ struct HomeView: View {
         } else {
             ScrollView {
                 VStack(spacing: 16) {
-                    // 1. Featured Banner (Tin lớn nhất)
                     if let featured = viewModel.featuredNews {
                         FeaturedCardView(news: featured).onTapGesture {
                             router.showNewsDetail(featured)

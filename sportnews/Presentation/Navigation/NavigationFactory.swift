@@ -11,9 +11,11 @@ final class NavigationFactory {
     
     private lazy var homeViewModel: HomeViewModel = {
         let repository = HomeRepository()
+        let footballRepository = FootballRepository()
         return HomeViewModel(
             getHomeNewsUseCase: GetHomeNewsUseCase(repository: repository),
-            getHomeCategoriesUseCase: GetHomeCategoriesUseCase(repository: repository)
+            getHomeCategoriesUseCase: GetHomeCategoriesUseCase(repository: repository),
+            getWorldCupFixturesUseCase: GetWorldCupFixturesUseCase(repository: footballRepository)
         )
     }()
     
@@ -57,6 +59,8 @@ final class NavigationFactory {
         switch route {
         case .discoverSectionList(let section):
             DiscoverCategoryViewAllView(section: section, viewModel: self.discoverCategoryViewAllViewModel)
+        case .worldCupFixtures(let schedule):
+            WorldCupFixturesDetailView(schedule: schedule)
         case .newsDetail:
             EmptyView()
         }
@@ -68,6 +72,8 @@ final class NavigationFactory {
         case .newsDetail(let news):
             NewsDetailView(news: news)
         case .discoverSectionList:
+            EmptyView()
+        case .worldCupFixtures:
             EmptyView()
         }
     }

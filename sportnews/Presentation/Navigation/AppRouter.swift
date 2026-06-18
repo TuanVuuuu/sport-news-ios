@@ -20,6 +20,10 @@ final class AppRouter: ObservableObject {
     func showDiscoverSectionList(_ section: DiscoverSection) {
         navigationPath.append(AppRoute.discoverSectionList(section))
     }
+    
+    func showWorldCupFixtures(_ schedule: WorldCupSchedule) {
+        navigationPath.append(AppRoute.worldCupFixtures(schedule))
+    }
 
     func dismissFullScreen() {
         fullScreenRoute = nil

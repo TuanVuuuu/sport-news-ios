@@ -16,6 +16,22 @@ extension Date {
         return formatter.date(from: string)
     }
     
+    /// VD: "2026-06-12T02:00:00+07:00"
+    static func fromISO8601(_ string: String) -> Date? {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        return formatter.date(from: string)
+    }
+    
+    /// Hiển thị giờ thi đấu theo múi giờ thiết bị. VD: "19:00"
+    func fixtureTimeString() -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale.current
+        formatter.timeZone = TimeZone.current
+        formatter.dateFormat = "HH:mm"
+        return formatter.string(from: self)
+    }
+    
     /// "3 giờ trước", "2 ngày trước", ...
     func relativeTimeString(referenceDate: Date = Date()) -> String {
         guard self <= referenceDate else { return "Vừa xong" }

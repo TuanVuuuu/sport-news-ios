@@ -9,6 +9,7 @@ import Foundation
 enum AppRoute: Hashable, Identifiable {
     case newsDetail(SportNews)
     case discoverSectionList(DiscoverSection)
+    case worldCupFixtures(WorldCupSchedule)
 
     var id: String {
         switch self {
@@ -16,6 +17,8 @@ enum AppRoute: Hashable, Identifiable {
             return "news-\(news.id)"
         case .discoverSectionList(let section):
             return "discover-section-\(section.id)"
+        case .worldCupFixtures:
+            return "world-cup-fixtures"
         }
     }
 
@@ -23,7 +26,7 @@ enum AppRoute: Hashable, Identifiable {
         switch self {
         case .newsDetail:
             return .fullScreen
-        case .discoverSectionList:
+        case .discoverSectionList, .worldCupFixtures:
             return .push
         }
     }

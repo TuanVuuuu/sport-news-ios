@@ -19,6 +19,13 @@ final class HomeViewModel: ObservableObject {
     @Published var categories: [SportCategory] = []
     @Published var selectedCategory: SportCategory?
     
+    // Lịch thi đấu World Cup
+    @Published var worldCupSchedule: WorldCupSchedule?
+    
+    var nearestUpcomingFixtureDay: FixtureScheduleDay? {
+        worldCupSchedule?.nearestUpcomingDay()
+    }
+    
     // Quản lý phân trang
     private var currentPage = 1
     private var canLoadMore = true
@@ -35,15 +42,17 @@ final class HomeViewModel: ObservableObject {
     }
     
     private let getHomeNewsUseCase: GetHomeNewsUseCaseProtocol
-    private let getHomeCategoriesUseCase: GetHomeCategoriesUseCaseProtocol // Thêm UseCase mới
+    private let getHomeCategoriesUseCase: GetHomeCategoriesUseCaseProtocol
+    private let getWorldCupFixturesUseCase: GetWorldCupFixturesUseCaseProtocol
     
-    // Nhận vào 2 UseCase thông qua Dependency Injection
     init(
         getHomeNewsUseCase: GetHomeNewsUseCaseProtocol,
-        getHomeCategoriesUseCase: GetHomeCategoriesUseCaseProtocol
+        getHomeCategoriesUseCase: GetHomeCategoriesUseCaseProtocol,
+        getWorldCupFixturesUseCase: GetWorldCupFixturesUseCaseProtocol
     ) {
         self.getHomeNewsUseCase = getHomeNewsUseCase
         self.getHomeCategoriesUseCase = getHomeCategoriesUseCase
+        self.getWorldCupFixturesUseCase = getWorldCupFixturesUseCase
     }
     
     // Hàm khởi tạo dữ liệu ban đầu cho màn hình Home
@@ -53,24 +62,24 @@ final class HomeViewModel: ObservableObject {
         canLoadMore = true
         
         do {
-            // 1. Gọi API lấy danh mục trước
-            let fetchedCategories = try await getHomeCategoriesUseCase.execute()
+            async let categoriesTask = getHomeCategoriesUseCase.execute()
+            async let newsTask = getHomeNewsUseCase.execute(
+                page: currentPage,
+                category: selectedCategory?.id == "" ? nil : selectedCategory?.id
+            )
+            async let fixturesTask = getWorldCupFixturesUseCase.execute(leagueId: 1)
             
-            // Tự chèn thêm Tab "Tất cả" vào đầu mảng với ID rỗng để Server hiểu là lấy tất cả
+            let fetchedCategories = try await categoriesTask
             let allTab = SportCategory(id: "", name: "Tất cả")
             self.categories = [allTab] + fetchedCategories
             
-            // Nếu chưa chọn danh mục nào, mặc định chọn Tab "Tất cả"
             if self.selectedCategory == nil {
                 self.selectedCategory = allTab
             }
             
-            // 2. Gọi API lấy tin tức theo Category đang chọn
-            self.newsList = try await getHomeNewsUseCase.execute(
-                page: currentPage,
-                category: selectedCategory?.id == "" ? nil : selectedCategory?.id
-            )
+            self.newsList = try await newsTask
             
+            self.worldCupSchedule = try await fixturesTask
         } catch {
             print("🚨 Lỗi khởi tạo dữ liệu Home: \(error)")
         }

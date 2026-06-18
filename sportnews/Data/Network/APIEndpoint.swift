@@ -18,7 +18,7 @@ protocol APIEndpoint {
 
 extension APIEndpoint {
     var baseURL: String {
-        return "https://vn-sport-news.onrender.com"
+        return "https://vn-sport-news-i1l7.onrender.com"
     }
     
     var headers: [String: String]? {
