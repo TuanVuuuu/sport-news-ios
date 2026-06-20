@@ -10,6 +10,10 @@ enum AppRoute: Hashable, Identifiable {
     case newsDetail(SportNews)
     case discoverSectionList(DiscoverSection)
     case worldCupFixtures(WorldCupSchedule)
+    case notificationSettings
+    case appearanceSettings
+    case savedNews
+    case feedbackSupport
 
     var id: String {
         switch self {
@@ -19,6 +23,14 @@ enum AppRoute: Hashable, Identifiable {
             return "discover-section-\(section.id)"
         case .worldCupFixtures:
             return "world-cup-fixtures"
+        case .notificationSettings:
+            return "notification-settings"
+        case .appearanceSettings:
+            return "appearance-settings"
+        case .savedNews:
+            return "saved-news"
+        case .feedbackSupport:
+            return "feedback-support"
         }
     }
 
@@ -26,7 +38,7 @@ enum AppRoute: Hashable, Identifiable {
         switch self {
         case .newsDetail:
             return .fullScreen
-        case .discoverSectionList, .worldCupFixtures:
+        case .discoverSectionList, .worldCupFixtures, .notificationSettings, .appearanceSettings, .savedNews, .feedbackSupport:
             return .push
         }
     }

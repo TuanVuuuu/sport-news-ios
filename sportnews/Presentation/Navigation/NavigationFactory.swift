@@ -29,6 +29,10 @@ final class NavigationFactory {
             )
         )
     }()
+
+    private lazy var profileViewModel = ProfileViewModel()
+
+    private lazy var notificationSettingsViewModel = NotificationSettingsViewModel()
     
     init(router: AppRouter) {
         self.router = router
@@ -43,7 +47,7 @@ final class NavigationFactory {
     }
     
     func makeProfileView() -> some View {
-        Text("Màn hình cá nhân")
+        ProfileView(viewModel: profileViewModel)
     }
     
     @ViewBuilder
@@ -58,6 +62,14 @@ final class NavigationFactory {
             )
         case .worldCupFixtures(let schedule):
             WorldCupFixturesDetailView(schedule: schedule)
+        case .notificationSettings:
+            NotificationSettingsView(viewModel: notificationSettingsViewModel)
+        case .appearanceSettings:
+            AppearanceSettingsView(viewModel: profileViewModel)
+        case .savedNews:
+            SavedNewsView()
+        case .feedbackSupport:
+            FeedbackSupportView()
         case .newsDetail:
             EmptyView()
         }
@@ -71,6 +83,8 @@ final class NavigationFactory {
         case .discoverSectionList:
             EmptyView()
         case .worldCupFixtures:
+            EmptyView()
+        case .notificationSettings, .appearanceSettings, .savedNews, .feedbackSupport:
             EmptyView()
         }
     }

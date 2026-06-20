@@ -10,6 +10,11 @@ import SwiftUI
 struct MainTabView: View {
     @StateObject private var router: AppRouter
     @State private var factory: NavigationFactory
+    @AppStorage(AppearanceMode.storageKey) private var appearanceModeRaw = AppearanceMode.system.rawValue
+
+    private var appearanceMode: AppearanceMode {
+        AppearanceMode(rawValue: appearanceModeRaw) ?? .system
+    }
 
     init() {
         let router = AppRouter()
@@ -38,7 +43,7 @@ struct MainTabView: View {
                     }
                     .tag(AppTab.profile)
             }
-            .accentColor(Color(red: 0.7, green: 0.1, blue: 0.1))
+            .accentColor(AppColors.accent)
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: AppRoute.self) { route in
                 factory.pushDestination(for: route)
@@ -50,5 +55,6 @@ struct MainTabView: View {
             factory.destination(for: route)
                 .environmentObject(router)
         }
+        .preferredColorScheme(appearanceMode.colorScheme)
     }
 }

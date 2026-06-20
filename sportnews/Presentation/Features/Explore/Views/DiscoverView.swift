@@ -17,7 +17,7 @@ struct DiscoverView: View {
             
             buildBody
         }
-        .background(Color.white)
+        .background(AppColors.backgroundPrimary)
         .toolbar(.hidden, for: .navigationBar)
         .task {
             guard viewModel.sections.isEmpty else { return }
@@ -55,7 +55,7 @@ struct DiscoverView: View {
                         Button {
                             router.showDiscoverSectionList(section)
                         } label: {
-                            Text("Xem tất cả >").font(.system(size: 14)).foregroundColor(.red)
+                            Text("Xem tất cả >").font(.system(size: 14)).foregroundColor(AppColors.accentRed)
                         }
                     }
                     .padding(.horizontal)
@@ -90,7 +90,7 @@ struct DiscoverView: View {
                         .font(.system(size: 13, weight: .medium))
                         .padding(.horizontal, 14)
                         .padding(.vertical, 8)
-                        .background(Color(.systemGray6))
+                        .background(AppColors.surfaceMuted)
                         .cornerRadius(8)
                 }
                 .buttonStyle(.plain)
@@ -105,14 +105,15 @@ struct DiscoverView: View {
         HStack {
             Text("SportNews")
                 .font(.system(size: 28, weight: .black, design: .rounded))
-                .foregroundColor(Color(red: 0.8, green: 0.1, blue: 0.1))
+                .foregroundColor(AppColors.accentRed)
             Spacer()
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 18, weight: .bold))
-                .foregroundColor(Color(red: 0.8, green: 0.1, blue: 0.1))
+                .foregroundColor(AppColors.accentRed)
         }
         .padding(.horizontal)
         .padding(.vertical, 12)
+        .background(AppColors.backgroundCard)
     }
     
     private var searchBarInput: some View {
@@ -145,7 +146,7 @@ struct DiscoverView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
-        .background(Color(.systemGray6))
+        .background(AppColors.surfaceMuted)
         .cornerRadius(10)
         .padding(.horizontal)
     }

@@ -28,7 +28,7 @@ struct NewsDetailView: View {
                     Spacer()
                 }
             }
-        }.background(Color.white)
+        }.background(AppColors.backgroundCard)
             .task {
                 print("Open WebView: news.id: \(news.id)")
             }
@@ -42,7 +42,7 @@ struct NewsDetailView: View {
                 Button(action: close) {
                     Image(systemName: "xmark")
                         .font(.system(size: 18, weight: .medium))
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                 }
                 .frame(width: 44, height: 44)
                 
@@ -58,7 +58,7 @@ struct NewsDetailView: View {
                     ShareLink(item: shareUrl, subject: Text(news.title)) {
                         Image(systemName: "square.and.arrow.up")
                             .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                             .frame(width: 44, height: 44)
                     }
                 } else {
@@ -73,7 +73,7 @@ struct NewsDetailView: View {
             
             Divider()
         }
-        .background(Color.white)
+        .background(AppColors.backgroundCard)
     }
 
     private func close() {

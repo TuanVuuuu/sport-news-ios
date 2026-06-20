@@ -17,7 +17,7 @@ struct DiscoverCategoryViewAllView: View {
             contentsView
         }
         .padding(.horizontal)
-        .background(Color.white)
+        .background(AppColors.backgroundPrimary)
         .navigationTitle(section.title)
         .navigationBarTitleDisplayMode(.inline)
         .task(id: section.id) {

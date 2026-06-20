@@ -34,7 +34,7 @@ struct WorldCupFixturesPreviewSection: View {
                                 Image(systemName: "chevron.right")
                                     .font(.system(size: 11, weight: .semibold))
                             }
-                            .foregroundColor(Color(red: 0.8, green: 0.1, blue: 0.1))
+                            .foregroundColor(AppColors.accentRed)
                         }
                     }
                     
@@ -59,9 +59,9 @@ struct WorldCupFixturesPreviewSection: View {
             .frame(height: 76)
         }
         .padding(.vertical, 12)
-        .background(Color.white)
+        .background(AppColors.backgroundCard)
 //        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 1)
+        .shadow(color: Color.primary.opacity(0.06), radius: 3, x: 0, y: 1)
 //        .padding(.horizontal)
     }
 }
@@ -74,7 +74,7 @@ private struct FixtureMatchPreviewCard: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(match.groupLabel)
                 .font(.system(size: 10, weight: .bold))
-                .foregroundColor(Color(red: 0.8, green: 0.1, blue: 0.1))
+                .foregroundColor(AppColors.accentRed)
             
             HStack(alignment: .center, spacing: 10) {
                 teamSide(team: match.homeTeam, isHome: true)
@@ -82,7 +82,7 @@ private struct FixtureMatchPreviewCard: View {
                 Text(match.localizedKickoffTime)
                     .font(.system(size: 17, weight: .bold))
                     .monospacedDigit()
-                    .foregroundColor(Color(red: 0.8, green: 0.1, blue: 0.1))
+                    .foregroundColor(AppColors.accentRed)
                     .frame(minWidth: 48)
                 
                 teamSide(team: match.awayTeam, isHome: false)
@@ -91,7 +91,7 @@ private struct FixtureMatchPreviewCard: View {
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
         .frame(width: width, alignment: .leading)
-        .background(Color(.systemGray6))
+        .background(AppColors.surfaceMuted)
         .cornerRadius(12)
     }
     
@@ -143,7 +143,7 @@ struct WorldCupFixturesSection: View {
         .padding(.vertical, 12)
 //        .background(Color.white)
 //        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 1)
+        .shadow(color: Color.primary.opacity(0.06), radius: 3, x: 0, y: 1)
 //        .padding(.horizontal)
     }
     
@@ -176,7 +176,7 @@ struct WorldCupFixturesSection: View {
         }
         .padding(.horizontal)
         .padding(.vertical, 12)
-        .background(.white)
+        .background(AppColors.backgroundCard)
         
     }
     
@@ -245,8 +245,8 @@ private struct FixtureDateTab: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 8)
-        .background(isSelected ? Color(red: 0.8, green: 0.1, blue: 0.1) : Color(.white))
-        .foregroundColor(isSelected ? .white : .primary)
+        .background(isSelected ? AppColors.accentRed : AppColors.backgroundCard)
+        .foregroundColor(isSelected ? AppColors.textOnAccent : .primary)
         .cornerRadius(10)
         .onTapGesture(perform: onTap)
     }
@@ -260,7 +260,7 @@ struct FixtureMatchRow: View {
             HStack {
                 Text(match.groupLabel)
                     .font(.system(size: 10, weight: .bold))
-                    .foregroundColor(Color(red: 0.8, green: 0.1, blue: 0.1))
+                    .foregroundColor(AppColors.accentRed)
                 
                 Text("•")
                     .foregroundColor(.secondary)
@@ -322,7 +322,7 @@ struct FixtureMatchRow: View {
         case "FT":
             return ("Kết thúc", .secondary)
         case "NS":
-            return (match.localizedKickoffTime, Color(red: 0.8, green: 0.1, blue: 0.1))
+            return (match.localizedKickoffTime, AppColors.accentRed)
         case "LIVE", "1H", "2H", "HT":
             return ("Trực tiếp", .green)
         default:

@@ -11,7 +11,7 @@ struct HomeView: View {
             categorySelector
             homeNews
         }
-        .background(Color(.systemGray6).edgesIgnoringSafeArea(.all))
+        .background(AppColors.backgroundPrimary.edgesIgnoringSafeArea(.all))
         .task {
             guard viewModel.newsList.isEmpty else { return }
             await viewModel.initializeHomeData()
@@ -24,13 +24,13 @@ struct HomeView: View {
         HStack {
             Text("SportNews")
                 .font(.system(size: 28, weight: .black, design: .rounded))
-                .foregroundColor(Color(red: 0.8, green: 0.1, blue: 0.1))
+                .foregroundColor(AppColors.accentRed)
             
             Spacer()
         }
         .padding(.horizontal)
         .padding(.vertical, 10)
-        .background(Color.white)
+        .background(AppColors.backgroundCard)
     }
     
     private var categorySelector: some View {
@@ -145,12 +145,12 @@ struct CategoryTabButton: View {
             .font(.system(size: 14, weight: .medium))
             .padding(.horizontal, 20)
             .padding(.vertical, 8)
-            .background(isSelected ? Color(red: 0.8, green: 0.1, blue: 0.1) : Color.white)
-            .foregroundColor(isSelected ? .white : .black)
+            .background(isSelected ? AppColors.accentRed : AppColors.backgroundCard)
+            .foregroundColor(isSelected ? AppColors.textOnAccent : .primary)
             .cornerRadius(20)
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(Color(.systemGray4), lineWidth: isSelected ? 0 : 1)
+                    .stroke(AppColors.borderSubtle, lineWidth: isSelected ? 0 : 1)
             )
             .onTapGesture {
                 onTap()
@@ -182,8 +182,8 @@ struct FeaturedCardView: View {
                     .font(.system(size: 10, weight: .bold))
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(Color(red: 0.8, green: 0.1, blue: 0.1))
-                    .foregroundColor(.white)
+                    .background(AppColors.accentRed)
+                    .foregroundColor(AppColors.textOnAccent)
                     .cornerRadius(4)
                 
                 Text(news.title)
@@ -195,7 +195,7 @@ struct FeaturedCardView: View {
         }
         .cornerRadius(12)
         .padding(.horizontal)
-        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+        .shadow(color: Color.primary.opacity(0.08), radius: 5, x: 0, y: 2)
     }
 }
 
@@ -232,8 +232,8 @@ struct NewsRowView: View {
             .clipped()
         }
         .padding()
-        .background(Color.white)
+        .background(AppColors.backgroundCard)
         .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 1)
+        .shadow(color: Color.primary.opacity(0.06), radius: 3, x: 0, y: 1)
     }
 }

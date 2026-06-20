@@ -18,7 +18,7 @@ struct WorldCupFixturesDetailView: View {
             )
             .padding(.top, 12)
         }
-        .background(Color(.systemGray6).ignoresSafeArea())
+        .background(AppColors.backgroundPrimary.ignoresSafeArea())
         .navigationTitle("Lịch thi đấu")
         .navigationBarTitleDisplayMode(.inline)
     }

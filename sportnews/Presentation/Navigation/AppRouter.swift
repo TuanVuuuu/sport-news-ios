@@ -25,6 +25,22 @@ final class AppRouter: ObservableObject {
         navigationPath.append(AppRoute.worldCupFixtures(schedule))
     }
 
+    func showNotificationSettings() {
+        navigationPath.append(AppRoute.notificationSettings)
+    }
+
+    func showAppearanceSettings() {
+        navigationPath.append(AppRoute.appearanceSettings)
+    }
+
+    func showSavedNews() {
+        navigationPath.append(AppRoute.savedNews)
+    }
+
+    func showFeedbackSupport() {
+        navigationPath.append(AppRoute.feedbackSupport)
+    }
+
     func dismissFullScreen() {
         fullScreenRoute = nil
     }
