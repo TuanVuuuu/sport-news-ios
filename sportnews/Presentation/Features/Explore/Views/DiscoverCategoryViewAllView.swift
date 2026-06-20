@@ -17,31 +17,33 @@ struct DiscoverCategoryViewAllView: View {
             contentsView
         }
         .padding(.horizontal)
-        .padding(.vertical, 16)
         .background(Color.white)
         .navigationTitle(section.title)
         .navigationBarTitleDisplayMode(.inline)
+        .task(id: section.id) {
+            await viewModel.refreshNews(idCategory: section.id)
+        }
     }
     
     private var contentsView: some View {
-        let newsListForCategory = viewModel.news.isEmpty ? section.articles : viewModel.news
+        let newsListForCategory = viewModel.news
         return ScrollView  {
             
             LazyVStack(spacing: 24) {
                 ForEach(newsListForCategory) { new in
                     NewsRowView(news: new)
                         .onAppear {
-                            let totalItems = viewModel.news.count
+                            let totalItems = newsListForCategory.count
                             
                             // Kích hoạt sớm khi người dùng cuộn tới phần tử thứ (Tổng - 4)
                             if totalItems >= 4 {
                                 let triggerIndex = totalItems - 4
-                                if new.id == viewModel.news[triggerIndex].id {
+                                if new.id == newsListForCategory[triggerIndex].id {
                                     _Concurrency.Task {
                                         await viewModel.loadMoreNews(idCategory: section.id)
                                     }
                                 }
-                            } else if new.id == viewModel.news.last?.id {
+                            } else if new.id == newsListForCategory.last?.id {
                                 // Phòng trường hợp danh sách quá ngắn (ít hơn 3 phần tử), vẫn cho phép ăn theo item cuối
                                 _Concurrency.Task {
                                     await viewModel.loadMoreNews(idCategory: section.id)
@@ -58,6 +60,7 @@ struct DiscoverCategoryViewAllView: View {
                         .padding(.vertical, 12)
                 }
             }
+            .padding(.bottom, 16)
         }.refreshable {
             await viewModel.refreshNews(idCategory: section.id)
         }

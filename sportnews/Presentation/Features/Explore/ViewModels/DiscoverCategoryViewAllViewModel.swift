@@ -18,6 +18,8 @@ class DiscoverCategoryViewAllViewModel: ObservableObject {
     private var currentPage = 1
     private var canLoadMore = true
     @Published var isLoadMoreLoading = false
+    
+    
     init(
         getHomeNewsUseCase: GetHomeNewsUseCase
     ) {

@@ -30,14 +30,6 @@ final class NavigationFactory {
         )
     }()
     
-    private lazy var discoverCategoryViewAllViewModel: DiscoverCategoryViewAllViewModel = {
-        let homeRepository = HomeRepository()
-        
-        return DiscoverCategoryViewAllViewModel(
-            getHomeNewsUseCase: GetHomeNewsUseCase(repository: homeRepository)
-        )
-    } ()
-    
     init(router: AppRouter) {
         self.router = router
     }
@@ -58,7 +50,12 @@ final class NavigationFactory {
     func pushDestination(for route: AppRoute) -> some View {
         switch route {
         case .discoverSectionList(let section):
-            DiscoverCategoryViewAllView(section: section, viewModel: self.discoverCategoryViewAllViewModel)
+            DiscoverCategoryViewAllView(
+                section: section,
+                viewModel: DiscoverCategoryViewAllViewModel(
+                    getHomeNewsUseCase: GetHomeNewsUseCase(repository: HomeRepository())
+                )
+            )
         case .worldCupFixtures(let schedule):
             WorldCupFixturesDetailView(schedule: schedule)
         case .newsDetail:
