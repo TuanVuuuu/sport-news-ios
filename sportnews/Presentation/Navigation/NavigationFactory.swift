@@ -56,8 +56,8 @@ final class NavigationFactory {
         case .discoverSectionList(let section):
             DiscoverCategoryViewAllView(
                 section: section,
-                viewModel: DiscoverCategoryViewAllViewModel(
-                    getHomeNewsUseCase: GetHomeNewsUseCase(repository: HomeRepository())
+                getHomeNewsUseCase: GetHomeNewsUseCase(
+                    repository: HomeRepository()
                 )
             )
         case .worldCupFixtures(let schedule):

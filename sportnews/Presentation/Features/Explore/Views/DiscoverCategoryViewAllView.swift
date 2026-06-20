@@ -9,8 +9,20 @@ import SwiftUI
 
 struct DiscoverCategoryViewAllView: View {
     let section: DiscoverSection
-    @ObservedObject var viewModel: DiscoverCategoryViewAllViewModel
+    @StateObject private var viewModel: DiscoverCategoryViewAllViewModel
     @EnvironmentObject private var router: AppRouter
+    
+    init(
+        section: DiscoverSection,
+        getHomeNewsUseCase: GetHomeNewsUseCase
+    ) {
+        self.section = section
+        _viewModel = StateObject(
+            wrappedValue: DiscoverCategoryViewAllViewModel(
+                getHomeNewsUseCase: getHomeNewsUseCase
+            )
+        )
+    }
     
     var body: some View {
         VStack(spacing: 16) {
