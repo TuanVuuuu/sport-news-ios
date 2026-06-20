@@ -128,7 +128,7 @@ struct HomeView: View {
                 .padding(.vertical, 12)
             }
             .refreshable {
-                await viewModel.initializeHomeData()
+                await viewModel.refreshHomeData()
             }
         }
     }

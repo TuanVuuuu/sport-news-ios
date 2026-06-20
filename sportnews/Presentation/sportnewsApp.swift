@@ -9,6 +9,10 @@ import SwiftUI
 
 @main
 struct SportNewsApp: App {
+    init() {
+        WebViewAdBlocker.shared.preload()
+    }
+
     var body: some Scene {
         WindowGroup {
             MainTabView()

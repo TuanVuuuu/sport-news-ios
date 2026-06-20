@@ -29,6 +29,7 @@ final class HomeViewModel: ObservableObject {
     // Quản lý phân trang
     private var currentPage = 1
     private var canLoadMore = true
+    private var isRefreshing = false
     
     // Logic: Lấy tin đầu tiên làm Banner nổi bật
     var featuredNews: SportNews? {
@@ -55,35 +56,50 @@ final class HomeViewModel: ObservableObject {
         self.getWorldCupFixturesUseCase = getWorldCupFixturesUseCase
     }
     
-    // Hàm khởi tạo dữ liệu ban đầu cho màn hình Home
     func initializeHomeData() async {
         isLoading = true
         currentPage = 1
         canLoadMore = true
-        
+
         do {
-            async let categoriesTask = getHomeCategoriesUseCase.execute()
-            async let newsTask = getHomeNewsUseCase.execute(
-                page: currentPage,
-                category: selectedCategory?.id == "" ? nil : selectedCategory?.id
-            )
-            async let fixturesTask = getWorldCupFixturesUseCase.execute(leagueId: 1)
-            
-            let fetchedCategories = try await categoriesTask
-            let allTab = SportCategory(id: "", name: "Tất cả")
-            self.categories = [allTab] + fetchedCategories
-            
-            if self.selectedCategory == nil {
-                self.selectedCategory = allTab
-            }
-            
-            self.newsList = try await newsTask
-            
-            self.worldCupSchedule = try await fixturesTask
+            try await fetchAndApplyHomeData()
         } catch {
             print("🚨 Lỗi khởi tạo dữ liệu Home: \(error)")
         }
         isLoading = false
+    }
+
+    func refreshHomeData() async {
+        guard !isRefreshing else { return }
+        isRefreshing = true
+        currentPage = 1
+        canLoadMore = true
+
+        do {
+            try await fetchAndApplyHomeData()
+        } catch {
+            print("🚨 Lỗi refresh Home: \(error)")
+        }
+        isRefreshing = false
+    }
+
+    private func fetchAndApplyHomeData() async throws {
+        let categoryParam = selectedCategory?.id.isEmpty == true ? nil : selectedCategory?.id
+
+        async let categoriesTask = getHomeCategoriesUseCase.execute()
+        async let newsTask = getHomeNewsUseCase.execute(page: 1, category: categoryParam)
+        async let fixturesTask = getWorldCupFixturesUseCase.execute(leagueId: 1)
+
+        let fetchedCategories = try await categoriesTask
+        let allTab = SportCategory(id: "", name: "Tất cả")
+        categories = [allTab] + fetchedCategories
+
+        if selectedCategory == nil {
+            selectedCategory = allTab
+        }
+
+        newsList = try await newsTask
+        worldCupSchedule = try await fixturesTask
     }
     
     // Hàm được kích hoạt khi người dùng click đổi Tab ngang danh mục
@@ -109,7 +125,7 @@ final class HomeViewModel: ObservableObject {
     
     // Hàm tải trang tiếp theo (Load More)
     func loadMoreNews() async {
-        guard !isLoading && !isLoadMoreLoading && canLoadMore else { return }
+        guard !isLoading && !isLoadMoreLoading && !isRefreshing && canLoadMore else { return }
         
         isLoadMoreLoading = true
         let nextPage = currentPage + 1

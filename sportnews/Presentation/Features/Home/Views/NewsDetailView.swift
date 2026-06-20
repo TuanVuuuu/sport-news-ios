@@ -29,6 +29,9 @@ struct NewsDetailView: View {
                 }
             }
         }.background(Color.white)
+            .task {
+                print("Open WebView: news.id: \(news.id)")
+            }
     }
     
     // Header component tái hiện lại thiết kế của bạn
