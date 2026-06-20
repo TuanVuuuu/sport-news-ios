@@ -163,9 +163,13 @@ struct DiscoverCardItem: View {
             NewsThumbnailView(
                 imageUrl: news.imageUrl,
                 blurHash: news.thumbnailBlurHash,
-                fallbackColor: Color.gray.opacity(0.1)
+                fallbackColor: Color.gray.opacity(0.1),
+                targetSize: CGSize(width: 220, height: 110)
             )
-            .frame(height: 110).frame(maxWidth: .infinity).cornerRadius(8).clipped()
+            .frame(height: 110)
+            .frame(maxWidth: .infinity)
+            .cornerRadius(8)
+            .clipped()
             
             Text(news.title)
                 .font(.system(size: 14, weight: .bold))

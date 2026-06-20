@@ -167,7 +167,8 @@ struct FeaturedCardView: View {
             NewsThumbnailView(
                 imageUrl: news.imageUrl,
                 blurHash: news.thumbnailBlurHash,
-                fallbackColor: Color.black.opacity(0.1)
+                fallbackColor: Color.black.opacity(0.1),
+                targetSize: CGSize(width: 400, height: 220)
             )
             .frame(height: 220)
             .frame(maxWidth: .infinity)
@@ -222,7 +223,8 @@ struct NewsRowView: View {
             // Hình ảnh thumbnail đưa sang bên phải
             NewsThumbnailView(
                 imageUrl: news.imageUrl,
-                blurHash: news.thumbnailBlurHash
+                blurHash: news.thumbnailBlurHash,
+                targetSize: CGSize(width: 100, height: 80)
             )
             .frame(width: 100, height: 80)
             .cornerRadius(8)

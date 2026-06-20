@@ -1,24 +1,40 @@
+import Kingfisher
 import SwiftUI
+import UIKit
 
 struct NewsThumbnailView: View {
     let imageUrl: String
     let blurHash: String?
-    var contentMode: ContentMode = .fill
     var fallbackColor: Color = Color.gray.opacity(0.2)
+    var targetSize: CGSize? = nil
 
     var body: some View {
-        AsyncImage(url: URL(string: imageUrl)) { phase in
-            switch phase {
-            case .success(let image):
-                image
+        Group {
+            if let url = URL(string: imageUrl), !imageUrl.isEmpty {
+                KFImage.url(url)
+                    .placeholder { blurHashPlaceholder }
+                    .setProcessor(imageProcessor)
+                    .fade(duration: 0.15)
                     .resizable()
-                    .aspectRatio(contentMode: contentMode)
-            case .empty, .failure:
-                blurHashPlaceholder
-            @unknown default:
+                    .scaledToFill()
+            } else {
                 blurHashPlaceholder
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .clipped()
+    }
+
+    private var imageProcessor: any ImageProcessor {
+        guard let targetSize else { return DefaultImageProcessor.default }
+
+        let scale = UIScreen.main.scale
+        return DownsamplingImageProcessor(
+            size: CGSize(
+                width: targetSize.width * scale,
+                height: targetSize.height * scale
+            )
+        )
     }
 
     @ViewBuilder
@@ -27,7 +43,7 @@ struct NewsThumbnailView: View {
             Image(uiImage: uiImage)
                 .interpolation(.low)
                 .resizable()
-                .aspectRatio(contentMode: contentMode)
+                .scaledToFill()
         } else {
             fallbackColor
         }

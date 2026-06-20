@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct SportNewsApp: App {
     init() {
+        KingfisherConfigurator.configure()
         WebViewAdBlocker.shared.preload()
     }
 
