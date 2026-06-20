@@ -84,22 +84,24 @@ final class HomeViewModel: ObservableObject {
     }
 
     private func fetchAndApplyHomeData() async throws {
-        let categoryParam = selectedCategory?.id.isEmpty == true ? nil : selectedCategory?.id
-
         async let categoriesTask = getHomeCategoriesUseCase.execute()
-        async let newsTask = getHomeNewsUseCase.execute(page: 1, category: categoryParam)
         async let fixturesTask = getWorldCupFixturesUseCase.execute(leagueId: 1)
 
         let fetchedCategories = try await categoriesTask
-        let allTab = SportCategory(id: "", name: "Tất cả")
-        categories = [allTab] + fetchedCategories
-
-        if selectedCategory == nil {
-            selectedCategory = allTab
-        }
-
-        newsList = try await newsTask
         worldCupSchedule = try await fixturesTask
+
+        categories = fetchedCategories
+        resolveSelectedCategory(from: fetchedCategories)
+
+        newsList = try await getHomeNewsUseCase.execute(page: 1, category: selectedCategory?.id)
+    }
+
+    private func resolveSelectedCategory(from fetchedCategories: [SportCategory]) {
+        if let selected = selectedCategory,
+           fetchedCategories.contains(where: { $0.id == selected.id }) {
+            return
+        }
+        selectedCategory = fetchedCategories.first
     }
     
     // Hàm được kích hoạt khi người dùng click đổi Tab ngang danh mục
@@ -114,9 +116,7 @@ final class HomeViewModel: ObservableObject {
         newsList = []
         
         do {
-            // Nếu id là "" (Tất cả) thì truyền nil lên API
-            let categoryParam = category.id.isEmpty ? nil : category.id
-            self.newsList = try await getHomeNewsUseCase.execute(page: currentPage, category: categoryParam)
+            self.newsList = try await getHomeNewsUseCase.execute(page: currentPage, category: category.id)
         } catch {
             print("🚨 Lỗi đổi danh mục: \(error)")
         }
@@ -132,10 +132,9 @@ final class HomeViewModel: ObservableObject {
         print("🚀 [ViewModel] Đang load more trang: \(nextPage) cho danh mục: \(selectedCategory?.name ?? "")")
         
         do {
-            let categoryParam = selectedCategory?.id.isEmpty == true ? nil : selectedCategory?.id
             let newPageNews = try await getHomeNewsUseCase.execute(
                 page: nextPage,
-                category: categoryParam
+                category: selectedCategory?.id
             )
             
             if newPageNews.isEmpty {
