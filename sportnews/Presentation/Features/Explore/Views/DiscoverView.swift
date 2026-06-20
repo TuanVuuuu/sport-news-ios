@@ -160,11 +160,11 @@ struct DiscoverCardItem: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            AsyncImage(url: URL(string: news.imageUrl)) { image in
-                image.resizable().aspectRatio(contentMode: .fill)
-            } placeholder: {
-                Color.gray.opacity(0.1)
-            }
+            NewsThumbnailView(
+                imageUrl: news.imageUrl,
+                blurHash: news.thumbnailBlurHash,
+                fallbackColor: Color.gray.opacity(0.1)
+            )
             .frame(height: 110).frame(maxWidth: .infinity).cornerRadius(8).clipped()
             
             Text(news.title)

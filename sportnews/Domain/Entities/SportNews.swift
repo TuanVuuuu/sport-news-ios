@@ -8,5 +8,6 @@ struct SportNews: Hashable, Identifiable {
     let timeAgo: String       // Thời gian hiển thị
     let category: String      // Danh mục để lọc tab
     let imageUrl: String      // Link ảnh thumbnail
+    let thumbnailBlurHash: String?
     let isFeatured: Bool      // Đánh dấu tin nổi bật
 }

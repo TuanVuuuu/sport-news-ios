@@ -37,6 +37,7 @@ struct DiscoverItemDTO: Decodable {
     let category_name: String?
     let source: String?
     let thumbnail_url: String?
+    let thumbnail_blurhash: String?
     let subCategory: String?
     let published_at: String?
     
@@ -48,6 +49,7 @@ struct DiscoverItemDTO: Decodable {
             timeAgo: (published_at ?? "").toRelativeTimeString(),
             category: "", // Khám phá không hiển thị thời gian thì để trống
             imageUrl: thumbnail_url ?? "",
+            thumbnailBlurHash: thumbnail_blurhash,
             isFeatured: subCategory == "Featured"
         )
     }

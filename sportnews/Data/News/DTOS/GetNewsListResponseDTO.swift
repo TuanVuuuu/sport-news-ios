@@ -31,6 +31,7 @@ struct NewsArticleDTO: Decodable {
     let title: String?
     let description: String?
     let thumbnail_url: String?
+    let thumbnail_blurhash: String?
     let link: String?
     let published_at: String?
     let createAt: String?
@@ -45,6 +46,7 @@ struct NewsArticleDTO: Decodable {
             timeAgo: (self.published_at ?? "").toRelativeTimeString(),
             category: self.category_name ?? "Thể thao",
             imageUrl: self.thumbnail_url ?? "",
+            thumbnailBlurHash: self.thumbnail_blurhash,
             isFeatured: isFeatured
         )
     }

@@ -164,12 +164,11 @@ struct FeaturedCardView: View {
     
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            AsyncImage(url: URL(string: news.imageUrl)) { image in
-                image.resizable()
-                    .aspectRatio(contentMode: .fill)
-            } placeholder: {
-                Color.black.opacity(0.1)
-            }
+            NewsThumbnailView(
+                imageUrl: news.imageUrl,
+                blurHash: news.thumbnailBlurHash,
+                fallbackColor: Color.black.opacity(0.1)
+            )
             .frame(height: 220)
             .frame(maxWidth: .infinity)
             .clipped()
@@ -221,12 +220,10 @@ struct NewsRowView: View {
             Spacer(minLength: 8) // Giữ khoảng cách an toàn tối thiểu với ảnh
             
             // Hình ảnh thumbnail đưa sang bên phải
-            AsyncImage(url: URL(string: news.imageUrl)) { image in
-                image.resizable()
-                    .aspectRatio(contentMode: .fill)
-            } placeholder: {
-                Color.gray.opacity(0.2)
-            }
+            NewsThumbnailView(
+                imageUrl: news.imageUrl,
+                blurHash: news.thumbnailBlurHash
+            )
             .frame(width: 100, height: 80)
             .cornerRadius(8)
             .clipped()
