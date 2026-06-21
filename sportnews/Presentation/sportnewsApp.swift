@@ -15,6 +15,8 @@ struct SportNewsApp: App {
     init() {
         FirebaseApp.configure()
         _ = DeviceIdStore.shared.deviceId
+        NotificationSettingsStorage.syncFromCloudIfNeeded()
+        NotificationSettingsStorage.ensureDefaultsIfNeeded()
         KingfisherConfigurator.configure()
         WebViewAdBlocker.shared.preload()
     }
