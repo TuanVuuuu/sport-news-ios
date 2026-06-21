@@ -8,6 +8,7 @@ import SwiftUI
 struct ProfileView: View {
     @ObservedObject var viewModel: ProfileViewModel
     @EnvironmentObject private var router: AppRouter
+    @EnvironmentObject private var debugUnlockManager: DebugUnlockManager
 
     var body: some View {
         VStack(spacing: 0) {
@@ -110,6 +111,9 @@ struct ProfileView: View {
             .foregroundColor(.secondary)
             .frame(maxWidth: .infinity)
             .padding(.top, 8)
+            .onTapGesture {
+                debugUnlockManager.registerVersionTap()
+            }
     }
 
     private func sectionTitle(_ title: String) -> some View {

@@ -1,13 +1,14 @@
 import Foundation
+import Pulse
 
 protocol NetworkServiceProtocol {
     func request<T: Decodable>(_ endpoint: APIEndpoint) async throws -> T
 }
 
 final class NetworkService: NetworkServiceProtocol {
-    private let session: URLSession
-    
-    init(session: URLSession = .shared) {
+    private let session: URLSessionProtocol
+
+    init(session: URLSessionProtocol = NetworkSessionProvider.shared) {
         self.session = session
     }
     
@@ -36,52 +37,10 @@ final class NetworkService: NetworkServiceProtocol {
             request.httpBody = try? JSONSerialization.data(withJSONObject: body)
         }
         
-        // 🔥 LOG REQUEST ĐI ĐI
-        logRequest(request)
-        
-        // 2. Thực thi Request
         let (data, response) = try await session.data(for: request)
-        
-        // 🔥 LOG RESPONSE ĐỔ VỀ
-        logResponse(response, data: data)
-        
-        // 3. Decode dữ liệu
+        _ = response
+
         let decoder = JSONDecoder()
         return try decoder.decode(T.self, from: data)
-    }
-    
-    // MARK: - Helper Logging Functions
-    
-    private func logRequest(_ request: URLRequest) {
-        print("\n🌐 >>>>>>>>>> OUTGOING REQUEST >>>>>>>>>>")
-        print("🔗 URL: \(request.url?.absoluteString ?? "")")
-        print("📝 METHOD: \(request.httpMethod ?? "")")
-        if let headers = request.allHTTPHeaderFields, !headers.isEmpty {
-            print("🔑 HEADERS: \(headers)")
-        }
-        if let bodyData = request.httpBody, let bodyString = String(data: bodyData, encoding: .utf8) {
-            print("📦 BODY: \(bodyString)")
-        }
-        print("-----------------------------------------\n")
-    }
-    
-    private func logResponse(_ response: URLResponse, data: Data) {
-        print("\n📥 <<<<<<<<<< INCOMING RESPONSE <<<<<<<<<<")
-        if let httpResponse = response as? HTTPURLResponse {
-            let statusCode = httpResponse.statusCode
-            // Đánh dấu icon theo Status Code để dễ nhìn bằng mắt
-            let statusIcon = (200...299).contains(statusCode) ? "🟢" : "🔴"
-            print("\(statusIcon) STATUS CODE: \(statusCode)")
-        }
-        
-        // Đọc và format JSON Response cho đẹp, dễ nhìn (Pretty Print)
-        if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
-           let prettyData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted),
-           let prettyString = String(data: prettyData, encoding: .utf8) {
-            print("📄 JSON BODY:\n\(prettyString)")
-        } else if let plainString = String(data: data, encoding: .utf8) {
-            print("📄 RAW BODY: \(plainString)")
-        }
-        print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n")
     }
 }

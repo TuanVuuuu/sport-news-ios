@@ -3,6 +3,7 @@ import SwiftUI
 struct HomeView: View {
     @ObservedObject var viewModel: HomeViewModel
     @EnvironmentObject private var router: AppRouter
+    @EnvironmentObject private var debugUnlockManager: DebugUnlockManager
 
     var body: some View {
         VStack(spacing: 0) {
@@ -25,6 +26,9 @@ struct HomeView: View {
             Text("SportNews")
                 .font(.system(size: 28, weight: .black, design: .rounded))
                 .foregroundColor(AppColors.accentRed)
+                .onTapGesture {
+                    debugUnlockManager.registerHomeHeaderTap()
+                }
             
             Spacer()
         }

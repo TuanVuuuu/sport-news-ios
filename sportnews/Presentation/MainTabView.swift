@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainTabView: View {
     @StateObject private var router: AppRouter
+    @StateObject private var debugUnlockManager = DebugUnlockManager()
     @State private var factory: NavigationFactory
     @AppStorage(AppearanceMode.storageKey) private var appearanceModeRaw = AppearanceMode.system.rawValue
 
@@ -51,9 +52,22 @@ struct MainTabView: View {
             }
         }
         .environmentObject(router)
+        .environmentObject(debugUnlockManager)
         .fullScreenCover(item: $router.fullScreenRoute) { route in
             factory.destination(for: route)
                 .environmentObject(router)
+        }
+        .overlay(alignment: .bottomTrailing) {
+            if debugUnlockManager.isNetworkDebugEnabled {
+                NetworkDebugFloatingButton {
+                    debugUnlockManager.showNetworkConsole()
+                }
+                .padding(.trailing, 20)
+                .padding(.bottom, 88)
+            }
+        }
+        .fullScreenCover(isPresented: $debugUnlockManager.isNetworkConsolePresented) {
+            NetworkConsoleView()
         }
         .preferredColorScheme(appearanceMode.colorScheme)
         .onAppear {

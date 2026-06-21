@@ -10,6 +10,8 @@
 		50FCCB6B2FE7034000953002 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 50KF01002 /* Kingfisher */; };
 		50FCCC122FE7824800953002 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 50FCCC112FE7824800953002 /* FirebaseCore */; };
 		50FCCC152FE7841800953002 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 50FCCC142FE7841800953002 /* FirebaseMessaging */; };
+		50PLS0042FE900000953002 /* Pulse in Frameworks */ = {isa = PBXBuildFile; productRef = 50PLS0022FE900000953002 /* Pulse */; };
+		50PLS0052FE900000953002 /* PulseUI in Frameworks */ = {isa = PBXBuildFile; productRef = 50PLS0032FE900000953002 /* PulseUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +52,8 @@
 				50FCCC152FE7841800953002 /* FirebaseMessaging in Frameworks */,
 				50FCCC122FE7824800953002 /* FirebaseCore in Frameworks */,
 				50FCCB6B2FE7034000953002 /* Kingfisher in Frameworks */,
+				50PLS0042FE900000953002 /* Pulse in Frameworks */,
+				50PLS0052FE900000953002 /* PulseUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,6 +109,8 @@
 				50KF01002 /* Kingfisher */,
 				50FCCC112FE7824800953002 /* FirebaseCore */,
 				50FCCC142FE7841800953002 /* FirebaseMessaging */,
+				50PLS0022FE900000953002 /* Pulse */,
+				50PLS0032FE900000953002 /* PulseUI */,
 			);
 			productName = sportnews;
 			productReference = 50A5CD2F2FD4875A00A47FD6 /* Sport News.app */;
@@ -137,6 +143,7 @@
 			packageReferences = (
 				50KF01001 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				50FCCC102FE7824800953002 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				50PLS0012FE900000953002 /* XCRemoteSwiftPackageReference "Pulse" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 50A5CD302FD4875A00A47FD6 /* Products */;
@@ -297,7 +304,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = sportnews/sportnews.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = 66Z9XCJX4K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -333,7 +340,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = sportnews/sportnews.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = 66Z9XCJX4K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -402,6 +409,14 @@
 				version = 8.9.0;
 			};
 		};
+		50PLS0012FE900000953002 /* XCRemoteSwiftPackageReference "Pulse" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kean/Pulse";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -419,6 +434,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 50KF01001 /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
+		};
+		50PLS0022FE900000953002 /* Pulse */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50PLS0012FE900000953002 /* XCRemoteSwiftPackageReference "Pulse" */;
+			productName = Pulse;
+		};
+		50PLS0032FE900000953002 /* PulseUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 50PLS0012FE900000953002 /* XCRemoteSwiftPackageReference "Pulse" */;
+			productName = PulseUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
