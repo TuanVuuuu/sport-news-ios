@@ -11,19 +11,22 @@ struct DiscoverCategoryViewAllView: View {
     let section: DiscoverSection
     @StateObject private var viewModel: DiscoverCategoryViewAllViewModel
     @EnvironmentObject private var router: AppRouter
-    
+    @EnvironmentObject private var toastManager: ToastManager
+
     init(
         section: DiscoverSection,
-        getHomeNewsUseCase: GetHomeNewsUseCase
+        getHomeNewsUseCase: GetHomeNewsUseCase,
+        toggleSavedNewsUseCase: ToggleSavedNewsUseCaseProtocol = ToggleSavedNewsUseCase()
     ) {
         self.section = section
         _viewModel = StateObject(
             wrappedValue: DiscoverCategoryViewAllViewModel(
-                getHomeNewsUseCase: getHomeNewsUseCase
+                getHomeNewsUseCase: getHomeNewsUseCase,
+                toggleSavedNewsUseCase: toggleSavedNewsUseCase
             )
         )
     }
-    
+
     var body: some View {
         VStack(spacing: 16) {
             contentsView
@@ -36,44 +39,53 @@ struct DiscoverCategoryViewAllView: View {
             await viewModel.refreshNews(idCategory: section.id)
         }
     }
-    
+
     private var contentsView: some View {
         let newsListForCategory = viewModel.news
-        return ScrollView  {
-            
+        return ScrollView {
             LazyVStack(spacing: 24) {
                 ForEach(newsListForCategory) { new in
-                    NewsRowView(news: new)
-                        .onAppear {
-                            let totalItems = newsListForCategory.count
-                            
-                            // Kích hoạt sớm khi người dùng cuộn tới phần tử thứ (Tổng - 4)
-                            if totalItems >= 4 {
-                                let triggerIndex = totalItems - 4
-                                if new.id == newsListForCategory[triggerIndex].id {
-                                    _Concurrency.Task {
-                                        await viewModel.loadMoreNews(idCategory: section.id)
-                                    }
-                                }
-                            } else if new.id == newsListForCategory.last?.id {
-                                // Phòng trường hợp danh sách quá ngắn (ít hơn 3 phần tử), vẫn cho phép ăn theo item cuối
+                    NewsRowView(
+                        news: new,
+                        isSaved: viewModel.isSaved(new.id),
+                        onSaveToggle: {
+                            let isSaved = viewModel.toggleSave(
+                                news: new,
+                                categoryId: section.id,
+                                categoryName: section.title
+                            )
+                            toastManager.show(isSaved ? "Đã lưu tin tức" : "Đã bỏ lưu tin tức")
+                        },
+                        onTap: {
+                            router.showNewsDetail(new)
+                        }
+                    )
+                    .onAppear {
+                        let totalItems = newsListForCategory.count
+
+                        if totalItems >= 4 {
+                            let triggerIndex = totalItems - 4
+                            if new.id == newsListForCategory[triggerIndex].id {
                                 _Concurrency.Task {
                                     await viewModel.loadMoreNews(idCategory: section.id)
                                 }
                             }
+                        } else if new.id == newsListForCategory.last?.id {
+                            _Concurrency.Task {
+                                await viewModel.loadMoreNews(idCategory: section.id)
+                            }
                         }
-                        .onTapGesture {
-                            router.showNewsDetail(new)
-                        }
+                    }
                 }
-                // Vòng xoay Loading khi kéo cuối trang (Load more)
+
                 if viewModel.isLoadMoreLoading {
                     ProgressView()
                         .padding(.vertical, 12)
                 }
             }
             .padding(.bottom, 16)
-        }.refreshable {
+        }
+        .refreshable {
             await viewModel.refreshNews(idCategory: section.id)
         }
     }

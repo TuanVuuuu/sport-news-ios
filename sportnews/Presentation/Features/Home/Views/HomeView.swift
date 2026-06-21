@@ -206,33 +206,57 @@ struct FeaturedCardView: View {
 // MARK: - Component: News Row (Từng dòng tin)
 struct NewsRowView: View {
     let news: SportNews
-    
+    var isSaved: Bool = false
+    var onSaveToggle: (() -> Void)? = nil
+    var onTap: (() -> Void)? = nil
+
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            // Nội dung text nằm bên trái chuẩn chỉ
             VStack(alignment: .leading, spacing: 8) {
                 Text("\(news.source.uppercased()) • \(news.timeAgo)")
                     .font(.system(size: 10, weight: .medium))
                     .foregroundColor(.secondary)
-                
+
                 Text(news.title)
                     .font(.system(size: 15, weight: .bold))
                     .foregroundColor(.primary)
                     .lineLimit(3)
                     .multilineTextAlignment(.leading)
             }
-            
-            Spacer(minLength: 8) // Giữ khoảng cách an toàn tối thiểu với ảnh
-            
-            // Hình ảnh thumbnail đưa sang bên phải
-            NewsThumbnailView(
-                imageUrl: news.imageUrl,
-                blurHash: news.thumbnailBlurHash,
-                targetSize: CGSize(width: 100, height: 80)
-            )
-            .frame(width: 100, height: 80)
-            .cornerRadius(8)
-            .clipped()
+            .contentShape(Rectangle())
+            .onTapGesture {
+                onTap?()
+            }
+
+            Spacer(minLength: 8)
+
+            ZStack(alignment: .topTrailing) {
+                NewsThumbnailView(
+                    imageUrl: news.imageUrl,
+                    blurHash: news.thumbnailBlurHash,
+                    targetSize: CGSize(width: 100, height: 80)
+                )
+                .frame(width: 100, height: 80)
+                .cornerRadius(8)
+                .clipped()
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    onTap?()
+                }
+
+                if let onSaveToggle {
+                    Button(action: onSaveToggle) {
+                        Image(systemName: isSaved ? "bookmark.fill" : "bookmark")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(isSaved ? AppColors.accentRed : .white)
+                            .padding(6)
+                            .background(Color.black.opacity(0.45))
+                            .clipShape(Circle())
+                    }
+                    .buttonStyle(.plain)
+                    .padding(4)
+                }
+            }
         }
         .padding()
         .background(AppColors.backgroundCard)

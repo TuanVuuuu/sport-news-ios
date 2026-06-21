@@ -61,7 +61,7 @@ struct DiscoverView: View {
                     .padding(.horizontal)
                     
                     ScrollView(.horizontal, showsIndicators: false) {
-                        LazyHStack(spacing: 16) {
+                        HStack(alignment: .top, spacing: 16) {
                             ForEach(section.articles) { news in
                                 DiscoverCardItem(news: news)
                                     .frame(width: 220)

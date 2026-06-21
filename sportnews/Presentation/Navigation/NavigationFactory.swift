@@ -33,6 +33,12 @@ final class NavigationFactory {
     private lazy var profileViewModel = ProfileViewModel()
 
     private lazy var notificationSettingsViewModel = NotificationSettingsViewModel()
+
+    private lazy var savedNewsViewModel = SavedNewsViewModel(
+        getSavedNewsByIdsUseCase: GetSavedNewsByIdsUseCase(
+            repository: SavedNewsRepository()
+        )
+    )
     
     init(router: AppRouter) {
         self.router = router
@@ -67,7 +73,7 @@ final class NavigationFactory {
         case .appearanceSettings:
             AppearanceSettingsView(viewModel: profileViewModel)
         case .savedNews:
-            SavedNewsView()
+            SavedNewsView(viewModel: savedNewsViewModel)
         case .feedbackSupport:
             FeedbackSupportView(viewModel: FeedbackSupportViewModel())
         case .newsDetail:
