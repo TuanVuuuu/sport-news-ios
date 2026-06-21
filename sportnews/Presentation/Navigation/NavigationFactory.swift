@@ -69,7 +69,7 @@ final class NavigationFactory {
         case .savedNews:
             SavedNewsView()
         case .feedbackSupport:
-            FeedbackSupportView()
+            FeedbackSupportView(viewModel: FeedbackSupportViewModel())
         case .newsDetail:
             EmptyView()
         }

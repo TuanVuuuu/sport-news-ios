@@ -10,6 +10,7 @@ import SwiftUI
 struct MainTabView: View {
     @StateObject private var router: AppRouter
     @StateObject private var debugUnlockManager = DebugUnlockManager()
+    @StateObject private var toastManager = ToastManager()
     @State private var factory: NavigationFactory
     @AppStorage(AppearanceMode.storageKey) private var appearanceModeRaw = AppearanceMode.system.rawValue
 
@@ -53,6 +54,8 @@ struct MainTabView: View {
         }
         .environmentObject(router)
         .environmentObject(debugUnlockManager)
+        .environmentObject(toastManager)
+        .toastOverlay(using: toastManager)
         .fullScreenCover(item: $router.fullScreenRoute) { route in
             factory.destination(for: route)
                 .environmentObject(router)
