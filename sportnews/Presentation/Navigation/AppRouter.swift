@@ -17,6 +17,26 @@ final class AppRouter: ObservableObject {
         fullScreenRoute = .newsDetail(news)
     }
 
+    func openArticleFromPush(highlightId: String, title: String? = nil) {
+        if highlightId.hasPrefix("test://") {
+            print("[Push] Test notification tapped: \(highlightId)")
+            return
+        }
+
+        showNewsDetail(
+            SportNews(
+                id: highlightId,
+                title: title ?? "Tin tức",
+                source: "Thông báo",
+                timeAgo: "",
+                category: "Thể thao",
+                imageUrl: "",
+                thumbnailBlurHash: nil,
+                isFeatured: true
+            )
+        )
+    }
+
     func showDiscoverSectionList(_ section: DiscoverSection) {
         navigationPath.append(AppRoute.discoverSectionList(section))
     }

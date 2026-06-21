@@ -16,6 +16,25 @@ struct NotificationSettingsView: View {
         }
         .background(AppColors.backgroundPrimary.ignoresSafeArea())
         .toolbar(.hidden, for: .navigationBar)
+        .task {
+            await viewModel.loadSettings()
+        }
+        .alert("Thông báo", isPresented: isErrorPresented) {
+            Button("Đóng", role: .cancel) {}
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
+    }
+
+    private var isErrorPresented: Binding<Bool> {
+        Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { isPresented in
+                if !isPresented {
+                    viewModel.errorMessage = nil
+                }
+            }
+        )
     }
 
     private var header: some View {
@@ -27,6 +46,7 @@ struct NotificationSettingsView: View {
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundColor(.primary)
             }
+            .disabled(viewModel.isSaving)
 
             Spacer()
 
@@ -36,11 +56,15 @@ struct NotificationSettingsView: View {
             Spacer()
 
             Button("Lưu") {
-                viewModel.saveSettings()
-                dismiss()
+                Task {
+                    if await viewModel.saveSettings() {
+                        dismiss()
+                    }
+                }
             }
             .font(.system(size: 16, weight: .semibold))
             .foregroundColor(AppColors.accentRed)
+            .disabled(viewModel.isLoading || viewModel.isSaving)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
@@ -48,13 +72,20 @@ struct NotificationSettingsView: View {
     }
 
     private var buildBody: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 20) {
-                breakingNewsCard
-                frequencySection
+        ZStack {
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 20) {
+                    breakingNewsCard
+                    frequencySection
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 20)
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 20)
+            .disabled(viewModel.isLoading)
+
+            if viewModel.isLoading {
+                ProgressView()
+            }
         }
     }
 
@@ -73,6 +104,7 @@ struct NotificationSettingsView: View {
             Toggle("", isOn: $viewModel.isBreakingNewsEnabled)
                 .labelsHidden()
                 .tint(AppColors.accentRed)
+                .disabled(viewModel.isSaving)
         }
         .padding(16)
         .background(AppColors.backgroundCard)
@@ -86,10 +118,12 @@ struct NotificationSettingsView: View {
                 .foregroundColor(AppColors.accentRed)
                 .padding(.horizontal, 4)
 
-            ForEach(NotificationFrequency.allCases) { frequency in
+            ForEach(viewModel.availableFrequencies) { frequency in
                 frequencyOptionCard(frequency)
             }
         }
+        .opacity(viewModel.isBreakingNewsEnabled ? 1 : 0.45)
+        .allowsHitTesting(viewModel.isBreakingNewsEnabled && !viewModel.isSaving)
     }
 
     private func frequencyOptionCard(_ frequency: NotificationFrequency) -> some View {
@@ -103,7 +137,7 @@ struct NotificationSettingsView: View {
                     Text(frequency.title)
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundColor(.primary)
-                    Text(frequency.subtitle)
+                    Text(frequency.subtitle(timeSlots: viewModel.timeSlots))
                         .font(.system(size: 13))
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.leading)

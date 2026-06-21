@@ -56,5 +56,13 @@ struct MainTabView: View {
                 .environmentObject(router)
         }
         .preferredColorScheme(appearanceMode.colorScheme)
+        .onAppear {
+            PushNotificationService.shared.bindNavigation { highlightId, title in
+                router.openArticleFromPush(highlightId: highlightId, title: title)
+            }
+        }
+        .task {
+            await PushNotificationService.shared.bootstrapOnLaunch()
+        }
     }
 }

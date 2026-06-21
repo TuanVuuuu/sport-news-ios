@@ -6,10 +6,15 @@
 //
 
 import SwiftUI
+import FirebaseCore
 
 @main
 struct SportNewsApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+
     init() {
+        FirebaseApp.configure()
+        _ = DeviceIdStore.shared.deviceId
         KingfisherConfigurator.configure()
         WebViewAdBlocker.shared.preload()
     }
