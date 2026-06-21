@@ -212,15 +212,12 @@ struct WorldCupFixturesSection: View {
     @ViewBuilder
     private var matchesList: some View {
         if let selectedDay {
-            VStack(spacing: 0) {
+            VStack(spacing: 10) {
                 ForEach(selectedDay.matches) { match in
                     FixtureMatchRow(match: match)
-                    
-                    if match.id != selectedDay.matches.last?.id {
-                        Divider().padding(.leading, 16)
-                    }
                 }
             }
+            .padding(.horizontal, 16)
         } else {
             Text("Chưa có lịch thi đấu")
                 .font(.system(size: 14))
@@ -256,43 +253,9 @@ struct FixtureMatchRow: View {
     let match: FootballFixture
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(match.groupLabel)
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundColor(AppColors.accentRed)
-                
-                Text("•")
-                    .foregroundColor(.secondary)
-                
-                Text(match.roundLabel)
-                    .font(.system(size: 10))
-                    .foregroundColor(.secondary)
-                    .lineLimit(1)
-                
-                Spacer()
-                
-                statusBadge
-            }
-            
-            HStack(spacing: 12) {
-                teamColumn(team: match.homeTeam, alignment: .trailing)
-                
-                VStack(spacing: 4) {
-                    if let scoreText = match.scoreText {
-                        Text(scoreText)
-                            .font(.system(size: 18, weight: .bold))
-                            .monospacedDigit()
-                    } else {
-                        Text(match.localizedKickoffTime)
-                            .font(.system(size: 16, weight: .bold))
-                            .monospacedDigit()
-                    }
-                }
-                .frame(width: 64)
-                
-                teamColumn(team: match.awayTeam, alignment: .leading)
-            }
+        VStack(alignment: .leading, spacing: 10) {
+            headerRow
+            matchRow
             
             if !match.venue.isEmpty {
                 Text(match.venue)
@@ -301,52 +264,96 @@ struct FixtureMatchRow: View {
                     .lineLimit(1)
             }
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 14)
         .padding(.vertical, 12)
+        .background(AppColors.surfaceMuted)
+        .cornerRadius(12)
+    }
+    
+    private var headerRow: some View {
+        HStack(spacing: 6) {
+            Text(match.groupLabel)
+                .font(.system(size: 11, weight: .bold))
+                .foregroundColor(AppColors.accentRed)
+            
+            Text(match.roundLabel)
+                .font(.system(size: 11))
+                .foregroundColor(.secondary)
+                .lineLimit(1)
+            
+            Spacer(minLength: 8)
+            
+            statusBadge
+        }
+    }
+    
+    private var matchRow: some View {
+        HStack(spacing: 8) {
+            homeTeamSide
+            centerContent
+                .frame(minWidth: 52)
+            awayTeamSide
+        }
+    }
+    
+    private var homeTeamSide: some View {
+        HStack(spacing: 6) {
+            teamLogo(url: match.homeTeam.logoUrl)
+            Text(match.homeTeam.name)
+                .font(.system(size: 13, weight: .semibold))
+                .lineLimit(2)
+                .multilineTextAlignment(.leading)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+    
+    private var awayTeamSide: some View {
+        HStack(spacing: 6) {
+            Text(match.awayTeam.name)
+                .font(.system(size: 13, weight: .semibold))
+                .lineLimit(2)
+                .multilineTextAlignment(.trailing)
+            teamLogo(url: match.awayTeam.logoUrl)
+        }
+        .frame(maxWidth: .infinity, alignment: .trailing)
+    }
+    
+    @ViewBuilder
+    private var centerContent: some View {
+        if let scoreText = match.scoreText {
+            Text(scoreText)
+                .font(.system(size: 17, weight: .bold))
+                .monospacedDigit()
+        } else {
+            Text(match.localizedKickoffTime)
+                .font(.system(size: 17, weight: .bold))
+                .monospacedDigit()
+        }
     }
     
     private var statusBadge: some View {
-        let badge = statusBadgeStyle
+        let style = statusBadgeStyle
         
-        return Text(badge.text)
-            .font(.system(size: 10, weight: .bold))
+        return Text(style.text)
+            .font(.system(size: 10, weight: .semibold))
             .padding(.horizontal, 8)
-            .padding(.vertical, 3)
-            .background(badge.color.opacity(0.12))
-            .foregroundColor(badge.color)
-            .cornerRadius(6)
+            .padding(.vertical, 4)
+            .background(style.background)
+            .foregroundColor(style.foreground)
+            .clipShape(Capsule())
     }
     
-    private var statusBadgeStyle: (text: String, color: Color) {
+    private var statusBadgeStyle: (text: String, background: Color, foreground: Color) {
         switch match.statusShort {
         case "FT":
-            return ("Kết thúc", .secondary)
+            return ("Kết thúc", Color.white.opacity(0.12), Color.secondary)
         case "NS":
-            return (match.localizedKickoffTime, AppColors.accentRed)
+            return (match.localizedKickoffTime, AppColors.accentRedSoft, AppColors.accentRed)
         case "LIVE", "1H", "2H", "HT":
-            return ("Trực tiếp", .green)
+            return ("Trực tiếp", Color.green.opacity(0.18), .green)
         default:
-            return (match.statusShort, .secondary)
+            return (match.statusShort, Color.white.opacity(0.12), .secondary)
         }
-    }
-    
-    private func teamColumn(team: FootballTeam, alignment: HorizontalAlignment) -> some View {
-        HStack(spacing: 8) {
-            if alignment == .leading {
-                teamLogo(url: team.logoUrl)
-                Text(team.name)
-                    .font(.system(size: 13, weight: .semibold))
-                    .lineLimit(2)
-                    .multilineTextAlignment(.leading)
-            } else {
-                Text(team.name)
-                    .font(.system(size: 13, weight: .semibold))
-                    .lineLimit(2)
-                    .multilineTextAlignment(.trailing)
-                teamLogo(url: team.logoUrl)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: alignment == .leading ? .leading : .trailing)
     }
     
     private func teamLogo(url: String) -> some View {
@@ -355,6 +362,7 @@ struct FixtureMatchRow: View {
         } placeholder: {
             Color.gray.opacity(0.15)
         }
-        .frame(width: 28, height: 28)
+        .frame(width: 22, height: 22)
+        .cornerRadius(2)
     }
 }
