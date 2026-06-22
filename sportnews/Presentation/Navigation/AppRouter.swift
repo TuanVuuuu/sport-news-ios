@@ -61,6 +61,14 @@ final class AppRouter: ObservableObject {
         navigationPath.append(AppRoute.feedbackSupport)
     }
 
+    func showPrivacyPolicy() {
+        navigationPath.append(AppRoute.privacyPolicy)
+    }
+
+    func showTermsOfUse() {
+        navigationPath.append(AppRoute.termsOfUse)
+    }
+
     func dismissFullScreen() {
         fullScreenRoute = nil
     }

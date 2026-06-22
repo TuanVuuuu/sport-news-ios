@@ -14,6 +14,8 @@ enum AppRoute: Hashable, Identifiable {
     case appearanceSettings
     case savedNews
     case feedbackSupport
+    case privacyPolicy
+    case termsOfUse
 
     var id: String {
         switch self {
@@ -31,6 +33,10 @@ enum AppRoute: Hashable, Identifiable {
             return "saved-news"
         case .feedbackSupport:
             return "feedback-support"
+        case .privacyPolicy:
+            return "privacy-policy"
+        case .termsOfUse:
+            return "terms-of-use"
         }
     }
 
@@ -38,7 +44,7 @@ enum AppRoute: Hashable, Identifiable {
         switch self {
         case .newsDetail:
             return .fullScreen
-        case .discoverSectionList, .worldCupFixtures, .notificationSettings, .appearanceSettings, .savedNews, .feedbackSupport:
+        case .discoverSectionList, .worldCupFixtures, .notificationSettings, .appearanceSettings, .savedNews, .feedbackSupport, .privacyPolicy, .termsOfUse:
             return .push
         }
     }

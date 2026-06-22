@@ -17,6 +17,17 @@ struct ProfileView: View {
         }
         .background(AppColors.backgroundPrimary.ignoresSafeArea())
         .toolbar(.hidden, for: .navigationBar)
+        .onAppear {
+            prewarmLegalPagesIfNeeded()
+        }
+        .onChange(of: router.selectedTab) { tab in
+            guard tab == .profile else { return }
+            prewarmLegalPagesIfNeeded()
+        }
+    }
+
+    private func prewarmLegalPagesIfNeeded() {
+        LegalWebViewPrewarmer.shared.prewarmAll()
     }
 
     private var profileHeader: some View {
@@ -98,6 +109,24 @@ struct ProfileView: View {
                     title: "Đóng góp ý kiến / Hỗ trợ"
                 ) {
                     router.showFeedbackSupport()
+                }
+
+                sectionDivider
+
+                navigationRow(
+                    icon: "lock.shield",
+                    title: "Chính sách bảo mật"
+                ) {
+                    router.showPrivacyPolicy()
+                }
+
+                sectionDivider
+
+                navigationRow(
+                    icon: "doc.text",
+                    title: "Điều khoản sử dụng"
+                ) {
+                    router.showTermsOfUse()
                 }
             }
             .background(AppColors.backgroundCard)

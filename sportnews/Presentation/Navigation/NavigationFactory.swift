@@ -76,6 +76,16 @@ final class NavigationFactory {
             SavedNewsView(viewModel: savedNewsViewModel)
         case .feedbackSupport:
             FeedbackSupportView(viewModel: FeedbackSupportViewModel())
+        case .privacyPolicy:
+            LegalDocumentView(
+                title: "Chính sách bảo mật",
+                urlString: AppLegalURLs.privacyPolicy
+            )
+        case .termsOfUse:
+            LegalDocumentView(
+                title: "Điều khoản sử dụng",
+                urlString: AppLegalURLs.termsOfUse
+            )
         case .newsDetail:
             EmptyView()
         }
@@ -90,7 +100,7 @@ final class NavigationFactory {
             EmptyView()
         case .worldCupFixtures:
             EmptyView()
-        case .notificationSettings, .appearanceSettings, .savedNews, .feedbackSupport:
+        case .notificationSettings, .appearanceSettings, .savedNews, .feedbackSupport, .privacyPolicy, .termsOfUse:
             EmptyView()
         }
     }
