@@ -10,12 +10,45 @@
 		50FCCB6B2FE7034000953002 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 50KF01002 /* Kingfisher */; };
 		50FCCC122FE7824800953002 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 50FCCC112FE7824800953002 /* FirebaseCore */; };
 		50FCCC152FE7841800953002 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 50FCCC142FE7841800953002 /* FirebaseMessaging */; };
+		50NSE0022FEA000000953002 /* NotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 50NSE0012FEA000000953002 /* NotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		50NSE0202FEA000000953002 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50NSE0212FEA000000953002 /* NotificationService.swift */; };
+		50NSE0232FEA000000953002 /* PushNotificationImageURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50NSE0242FEA000000953002 /* PushNotificationImageURL.swift */; };
+		50NSE0252FEA000000953002 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 50FCCC112FE7824800953002 /* FirebaseCore */; };
+		50NSE0262FEA000000953002 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 50FCCC142FE7841800953002 /* FirebaseMessaging */; };
 		50PLS0042FE900000953002 /* Pulse in Frameworks */ = {isa = PBXBuildFile; productRef = 50PLS0022FE900000953002 /* Pulse */; };
 		50PLS0052FE900000953002 /* PulseUI in Frameworks */ = {isa = PBXBuildFile; productRef = 50PLS0032FE900000953002 /* PulseUI */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		50NSE0162FEA000000953002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 50A5CD272FD4875A00A47FD6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 50NSE0102FEA000000953002;
+			remoteInfo = NotificationServiceExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		50NSE0142FEA000000953002 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				50NSE0022FEA000000953002 /* NotificationServiceExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		50A5CD2F2FD4875A00A47FD6 /* Sport News.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sport News.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		50NSE0012FEA000000953002 /* NotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		50NSE0212FEA000000953002 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		50NSE0222FEA000000953002 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		50NSE0242FEA000000953002 /* PushNotificationImageURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PushNotificationImageURL.swift; path = ../Core/Push/PushNotificationImageURL.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -57,6 +90,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		50NSE0122FEA000000953002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50NSE0252FEA000000953002 /* FirebaseCore in Frameworks */,
+				50NSE0262FEA000000953002 /* FirebaseMessaging in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -64,8 +106,9 @@
 			isa = PBXGroup;
 			children = (
 				50A5CD312FD4875A00A47FD6 /* sportnews */,
-				50A5CD302FD4875A00A47FD6 /* Products */,
 				5020312C2FDEFF16000E7E36 /* Core */,
+				50NSE0302FEA000000953002 /* NotificationServiceExtension */,
+				50A5CD302FD4875A00A47FD6 /* Products */,
 				50FCCC132FE7841800953002 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -74,6 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				50A5CD2F2FD4875A00A47FD6 /* Sport News.app */,
+				50NSE0012FEA000000953002 /* NotificationServiceExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -83,6 +127,16 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		50NSE0302FEA000000953002 /* NotificationServiceExtension */ = {
+			isa = PBXGroup;
+			children = (
+				50NSE0212FEA000000953002 /* NotificationService.swift */,
+				50NSE0242FEA000000953002 /* PushNotificationImageURL.swift */,
+				50NSE0222FEA000000953002 /* Info.plist */,
+			);
+			path = NotificationServiceExtension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,10 +149,12 @@
 				50A5CD2B2FD4875A00A47FD6 /* Sources */,
 				50A5CD2C2FD4875A00A47FD6 /* Frameworks */,
 				50A5CD2D2FD4875A00A47FD6 /* Resources */,
+				50NSE0142FEA000000953002 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				50NSE0152FEA000000953002 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				5020312C2FDEFF16000E7E36 /* Core */,
@@ -116,6 +172,27 @@
 			productReference = 50A5CD2F2FD4875A00A47FD6 /* Sport News.app */;
 			productType = "com.apple.product-type.application";
 		};
+		50NSE0102FEA000000953002 /* NotificationServiceExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 50NSE0322FEA000000953002 /* Build configuration list for PBXNativeTarget "NotificationServiceExtension" */;
+			buildPhases = (
+				50NSE0112FEA000000953002 /* Sources */,
+				50NSE0122FEA000000953002 /* Frameworks */,
+				50NSE0132FEA000000953002 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NotificationServiceExtension;
+			packageProductDependencies = (
+				50FCCC112FE7824800953002 /* FirebaseCore */,
+				50FCCC142FE7841800953002 /* FirebaseMessaging */,
+			);
+			productName = NotificationServiceExtension;
+			productReference = 50NSE0012FEA000000953002 /* NotificationServiceExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -127,6 +204,9 @@
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					50A5CD2E2FD4875A00A47FD6 = {
+						CreatedOnToolsVersion = 26.2;
+					};
+					50NSE0102FEA000000953002 = {
 						CreatedOnToolsVersion = 26.2;
 					};
 				};
@@ -151,12 +231,20 @@
 			projectRoot = "";
 			targets = (
 				50A5CD2E2FD4875A00A47FD6 /* sportnews */,
+				50NSE0102FEA000000953002 /* NotificationServiceExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		50A5CD2D2FD4875A00A47FD6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50NSE0132FEA000000953002 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -173,7 +261,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		50NSE0112FEA000000953002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50NSE0202FEA000000953002 /* NotificationService.swift in Sources */,
+				50NSE0232FEA000000953002 /* PushNotificationImageURL.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		50NSE0152FEA000000953002 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 50NSE0102FEA000000953002 /* NotificationServiceExtension */;
+			targetProxy = 50NSE0162FEA000000953002 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		50A5CD382FD4875B00A47FD6 /* Debug */ = {
@@ -304,7 +409,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = sportnews/sportnews.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 66Z9XCJX4K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -320,7 +425,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.vunt.sportnews;
 				PRODUCT_NAME = "Sport News";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -340,7 +445,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = sportnews/sportnews.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 66Z9XCJX4K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -356,7 +461,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.vunt.sportnews;
 				PRODUCT_NAME = "Sport News";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -364,6 +469,58 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		50NSE0302FEA000000953003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 66Z9XCJX4K;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NotificationServiceExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vunt.sportnews.NotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		50NSE0312FEA000000953003 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 66Z9XCJX4K;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NotificationServiceExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vunt.sportnews.NotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -386,6 +543,15 @@
 			buildConfigurations = (
 				50A5CD3B2FD4875B00A47FD6 /* Debug */,
 				50A5CD3C2FD4875B00A47FD6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		50NSE0322FEA000000953002 /* Build configuration list for PBXNativeTarget "NotificationServiceExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				50NSE0302FEA000000953003 /* Debug */,
+				50NSE0312FEA000000953003 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

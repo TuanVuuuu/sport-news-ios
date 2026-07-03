@@ -17,7 +17,7 @@ final class AppRouter: ObservableObject {
         fullScreenRoute = .newsDetail(news)
     }
 
-    func openArticleFromPush(highlightId: String, title: String? = nil) {
+    func openArticleFromPush(highlightId: String, title: String? = nil, imageUrl: String? = nil) {
         if highlightId.hasPrefix("test://") {
             print("[Push] Test notification tapped: \(highlightId)")
             return
@@ -30,7 +30,7 @@ final class AppRouter: ObservableObject {
                 source: "Thông báo",
                 timeAgo: "",
                 category: "Thể thao",
-                imageUrl: "",
+                imageUrl: imageUrl ?? "",
                 thumbnailBlurHash: nil,
                 isFeatured: true
             )

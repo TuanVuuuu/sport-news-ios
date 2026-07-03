@@ -30,8 +30,8 @@ final class PushNotificationService {
     private let registerDeviceUseCase: RegisterDeviceUseCaseProtocol
 
     private(set) var fcmToken: String?
-    private var pendingOpenArticle: (highlightId: String, title: String?)?
-    var onOpenArticle: ((String, String?) -> Void)?
+    private var pendingOpenArticle: (highlightId: String, title: String?, imageUrl: String?)?
+    var onOpenArticle: ((String, String?, String?) -> Void)?
 
     init(
         deviceIdStore: DeviceIdStoreProtocol = DeviceIdStore.shared,
@@ -97,8 +97,11 @@ final class PushNotificationService {
     }
 
     func handleTokenRefresh(_ token: String?) async {
-        guard let token else { return }
+        guard let token else {
+            return
+        }
         fcmToken = token
+        logFCMToken(token, source: "refresh")
         guard isPushEnabledLocally else { return }
 
         do {
@@ -113,7 +116,7 @@ final class PushNotificationService {
         handlePayload(payload)
     }
 
-    func bindNavigation(handler: @escaping (String, String?) -> Void) {
+    func bindNavigation(handler: @escaping (String, String?, String?) -> Void) {
         onOpenArticle = handler
         flushPendingNavigation()
     }
@@ -130,16 +133,16 @@ final class PushNotificationService {
         }
 
         if let onOpenArticle {
-            onOpenArticle(highlightId, payload.title)
+            onOpenArticle(highlightId, payload.title, payload.imageUrl)
         } else {
-            pendingOpenArticle = (highlightId, payload.title)
+            pendingOpenArticle = (highlightId, payload.title, payload.imageUrl)
         }
     }
 
     private func flushPendingNavigation() {
         guard let pending = pendingOpenArticle, let onOpenArticle else { return }
         pendingOpenArticle = nil
-        onOpenArticle(pending.highlightId, pending.title)
+        onOpenArticle(pending.highlightId, pending.title, pending.imageUrl)
     }
 
     private func resolveFCMToken() async throws -> String {
@@ -150,6 +153,7 @@ final class PushNotificationService {
         for attempt in 0..<10 {
             if let token = try? await Messaging.messaging().token(), !token.isEmpty {
                 fcmToken = token
+                logFCMToken(token, source: "resolve")
                 return token
             }
 
@@ -167,5 +171,11 @@ final class PushNotificationService {
 
     private func currentLocalPreferences() -> DevicePreferences {
         NotificationSettingsStorage.currentPreferences()
+    }
+
+    private func logFCMToken(_ token: String, source: String) {
+        #if DEBUG
+        print("[Push] FCM Token (\(source)): \(token)")
+        #endif
     }
 }

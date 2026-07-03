@@ -14,6 +14,7 @@ struct PushNotificationPayload {
     let isTest: Bool
     let title: String?
     let body: String?
+    let imageUrl: String?
 
     init(userInfo: [AnyHashable: Any]) {
         type = Self.stringValue(userInfo["type"])
@@ -24,6 +25,7 @@ struct PushNotificationPayload {
         isTest = Self.stringValue(userInfo["is_test"]) == "true"
         title = Self.stringValue(userInfo["title"]) ?? Self.alertTitle(from: userInfo)
         body = Self.stringValue(userInfo["body"]) ?? Self.alertBody(from: userInfo)
+        imageUrl = PushNotificationImageURL.resolve(from: userInfo)
     }
 
     private static func stringValue(_ value: Any?) -> String? {

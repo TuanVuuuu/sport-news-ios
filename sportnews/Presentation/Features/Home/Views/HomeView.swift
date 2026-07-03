@@ -4,7 +4,7 @@ struct HomeView: View {
     @ObservedObject var viewModel: HomeViewModel
     @EnvironmentObject private var router: AppRouter
     @EnvironmentObject private var debugUnlockManager: DebugUnlockManager
-
+    
     var body: some View {
         VStack(spacing: 0) {
             appBar
@@ -71,8 +71,8 @@ struct HomeView: View {
                     router.showWorldCupFixtures(schedule)
                 }
             )
-//            .padding(.top, 12)
-//            .background(Color(.systemGray6))
+            //            .padding(.top, 12)
+            //            .background(Color(.systemGray6))
         }
     }
     
@@ -96,29 +96,31 @@ struct HomeView: View {
                     // 2. List tin tức phía dưới
                     LazyVStack(spacing: 16) {
                         ForEach(viewModel.filteredNews) { news in
-                            NewsRowView(news: news)
-                                .onAppear {
-                                    let filteredList = viewModel.filteredNews
-                                    let totalItems = filteredList.count
-                                    
-                                    // Kích hoạt sớm khi người dùng cuộn tới phần tử thứ (Tổng - 4)
-                                    if totalItems >= 4 {
-                                        let triggerIndex = totalItems - 4
-                                        if news.id == filteredList[triggerIndex].id {
-                                            _Concurrency.Task {
-                                                await viewModel.loadMoreNews()
-                                            }
-                                        }
-                                    } else if news.id == filteredList.last?.id {
-                                        // Phòng trường hợp danh sách quá ngắn (ít hơn 3 phần tử), vẫn cho phép ăn theo item cuối
+                            NewsRowView(
+                                news: news,
+                                onTap: {
+                                    router.showNewsDetail(news)
+                                }
+                            )
+                            .onAppear {
+                                let filteredList = viewModel.filteredNews
+                                let totalItems = filteredList.count
+                                
+                                // Kích hoạt sớm khi người dùng cuộn tới phần tử thứ (Tổng - 4)
+                                if totalItems >= 4 {
+                                    let triggerIndex = totalItems - 4
+                                    if news.id == filteredList[triggerIndex].id {
                                         _Concurrency.Task {
                                             await viewModel.loadMoreNews()
                                         }
                                     }
+                                } else if news.id == filteredList.last?.id {
+                                    // Phòng trường hợp danh sách quá ngắn (ít hơn 3 phần tử), vẫn cho phép ăn theo item cuối
+                                    _Concurrency.Task {
+                                        await viewModel.loadMoreNews()
+                                    }
                                 }
-                                .onTapGesture {
-                                    router.showNewsDetail(news)
-                                }
+                            }
                         }
                     }
                     .padding(.horizontal)
@@ -209,14 +211,14 @@ struct NewsRowView: View {
     var isSaved: Bool = false
     var onSaveToggle: (() -> Void)? = nil
     var onTap: (() -> Void)? = nil
-
+    
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             VStack(alignment: .leading, spacing: 8) {
                 Text("\(news.source.uppercased()) • \(news.timeAgo)")
                     .font(.system(size: 10, weight: .medium))
                     .foregroundColor(.secondary)
-
+                
                 Text(news.title)
                     .font(.system(size: 15, weight: .bold))
                     .foregroundColor(.primary)
@@ -227,9 +229,9 @@ struct NewsRowView: View {
             .onTapGesture {
                 onTap?()
             }
-
+            
             Spacer(minLength: 8)
-
+            
             ZStack(alignment: .topTrailing) {
                 NewsThumbnailView(
                     imageUrl: news.imageUrl,
@@ -243,7 +245,7 @@ struct NewsRowView: View {
                 .onTapGesture {
                     onTap?()
                 }
-
+                
                 if let onSaveToggle {
                     Button(action: onSaveToggle) {
                         Image(systemName: isSaved ? "bookmark.fill" : "bookmark")
