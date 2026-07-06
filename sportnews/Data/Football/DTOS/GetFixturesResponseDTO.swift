@@ -66,6 +66,7 @@ extension FixturesDataDTO {
             totalMatches: total_matches ?? 0,
             scheduleDays: (schedule ?? []).compactMap { $0.toDomain() }
         )
+        .groupedByLocalTimezone()
     }
 }
 

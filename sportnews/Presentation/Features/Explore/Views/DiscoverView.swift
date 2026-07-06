@@ -107,9 +107,6 @@ struct DiscoverView: View {
                 .font(.system(size: 28, weight: .black, design: .rounded))
                 .foregroundColor(AppColors.accentRed)
             Spacer()
-            Image(systemName: "magnifyingglass")
-                .font(.system(size: 18, weight: .bold))
-                .foregroundColor(AppColors.accentRed)
         }
         .padding(.horizontal)
         .padding(.vertical, 12)
