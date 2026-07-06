@@ -12,7 +12,7 @@ struct DiscoverCategoryViewAllView: View {
     @StateObject private var viewModel: DiscoverCategoryViewAllViewModel
     @EnvironmentObject private var router: AppRouter
     @EnvironmentObject private var toastManager: ToastManager
-
+    
     init(
         section: DiscoverSection,
         getHomeNewsUseCase: GetHomeNewsUseCase,
@@ -26,7 +26,7 @@ struct DiscoverCategoryViewAllView: View {
             )
         )
     }
-
+    
     var body: some View {
         VStack(spacing: 16) {
             contentsView
@@ -39,54 +39,64 @@ struct DiscoverCategoryViewAllView: View {
             await viewModel.refreshNews(idCategory: section.id)
         }
     }
-
+    
+    @ViewBuilder
     private var contentsView: some View {
         let newsListForCategory = viewModel.news
-        return ScrollView {
-            LazyVStack(spacing: 24) {
-                ForEach(newsListForCategory) { new in
-                    NewsRowView(
-                        news: new,
-                        isSaved: viewModel.isSaved(new.id),
-                        onSaveToggle: {
-                            let isSaved = viewModel.toggleSave(
-                                news: new,
-                                categoryId: section.id,
-                                categoryName: section.title
-                            )
-                            toastManager.show(isSaved ? "Đã lưu tin tức" : "Đã bỏ lưu tin tức")
-                        },
-                        onTap: {
-                            router.showNewsDetail(new)
-                        }
-                    )
-                    .onAppear {
-                        let totalItems = newsListForCategory.count
-
-                        if totalItems >= 4 {
-                            let triggerIndex = totalItems - 4
-                            if new.id == newsListForCategory[triggerIndex].id {
+        
+        if viewModel.isLoading {
+            VStack {
+                Spacer()
+                ProgressView()
+                Spacer()
+            }
+        } else {
+            ScrollView {
+                LazyVStack(spacing: 24) {
+                    ForEach(newsListForCategory) { new in
+                        NewsRowView(
+                            news: new,
+                            isSaved: viewModel.isSaved(new.id),
+                            onSaveToggle: {
+                                let isSaved = viewModel.toggleSave(
+                                    news: new,
+                                    categoryId: section.id,
+                                    categoryName: section.title
+                                )
+                                toastManager.show(isSaved ? "Đã lưu tin tức" : "Đã bỏ lưu tin tức")
+                            },
+                            onTap: {
+                                router.showNewsDetail(new)
+                            }
+                        )
+                        .onAppear {
+                            let totalItems = newsListForCategory.count
+                            
+                            if totalItems >= 4 {
+                                let triggerIndex = totalItems - 4
+                                if new.id == newsListForCategory[triggerIndex].id {
+                                    _Concurrency.Task {
+                                        await viewModel.loadMoreNews(idCategory: section.id)
+                                    }
+                                }
+                            } else if new.id == newsListForCategory.last?.id {
                                 _Concurrency.Task {
                                     await viewModel.loadMoreNews(idCategory: section.id)
                                 }
                             }
-                        } else if new.id == newsListForCategory.last?.id {
-                            _Concurrency.Task {
-                                await viewModel.loadMoreNews(idCategory: section.id)
-                            }
                         }
                     }
+                    
+                    if viewModel.isLoadMoreLoading {
+                        ProgressView()
+                            .padding(.vertical, 12)
+                    }
                 }
-
-                if viewModel.isLoadMoreLoading {
-                    ProgressView()
-                        .padding(.vertical, 12)
-                }
+                .padding(.bottom, 16)
             }
-            .padding(.bottom, 16)
-        }
-        .refreshable {
-            await viewModel.refreshNews(idCategory: section.id)
+            .refreshable {
+                await viewModel.refreshNews(idCategory: section.id)
+            }
         }
     }
 }

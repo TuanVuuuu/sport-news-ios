@@ -17,8 +17,9 @@ class DiscoverViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var sections: [DiscoverSection] = []
     @Published var keywordSuggestions: [KeywordSuggestions] = []
-
-
+    
+    private let selectKeywordPublisher = PassthroughSubject<String, Never>()
+    private var cancellables = Set<AnyCancellable>()
     
     init(
         getDiscoverUseCase: GetDiscoverUseCase,
@@ -26,6 +27,39 @@ class DiscoverViewModel: ObservableObject {
     ) {
         self.getDiscoverUseCase = getDiscoverUseCase
         self.getKeywordSuggestionsUseCase = getKeywordSuggestionsUseCase
+        
+        setupPipeline()
+    }
+    
+    private func setupPipeline() {
+        selectKeywordPublisher
+            .handleEvents(receiveOutput: { [weak self] _ in
+                self?.isLoading = true
+            })
+            .map { [weak self] query -> AnyPublisher<[DiscoverSection], Never> in
+                guard let self = self else {return Just([]).eraseToAnyPublisher()}
+                
+                return Future {
+                    promise in
+                    
+                    Task {
+                        do {
+                            let result = try await self.getKeywordSuggestionsUseCase.search(text: query)
+                            promise(.success(result))
+                        } catch {
+                            promise(.success([]))
+                        }
+                    }
+                }.eraseToAnyPublisher()
+                
+            }
+            .switchToLatest()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newSections in
+                self?.sections = newSections
+                self?.isLoading = false
+            }
+            .store(in: &cancellables)
     }
     
     
@@ -50,20 +84,19 @@ class DiscoverViewModel: ObservableObject {
         }
     }
     
-    func searchDiscoverByKeyword(text: String) async {
-        self.isLoading = true
-        do {
-            let query = text.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !query.isEmpty else {
-                await loadDiscoverData()  // rỗng → quay lại discover mặc định
-                return
+    func searchDiscoverByKeyword(text: String) {
+        
+        let query = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        guard !query.isEmpty else {
+            Task {
+                await loadDiscoverData()
             }
-            
-            self.sections = try await getKeywordSuggestionsUseCase.search(text: text)
-        } catch {
-            print("Error: \(error.localizedDescription)")
+            // rỗng → quay lại discover mặc định
+            return
         }
-        self.isLoading = false
+        
+        selectKeywordPublisher.send(query)
     }
     
     func selectedSearchText(text: String) {

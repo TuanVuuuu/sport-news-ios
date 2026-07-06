@@ -19,6 +19,8 @@ class DiscoverCategoryViewAllViewModel: ObservableObject {
     private var currentPage = 1
     private var canLoadMore = true
     @Published var isLoadMoreLoading = false
+    
+    @Published var isLoading = false
 
     init(
         getHomeNewsUseCase: GetHomeNewsUseCase,
@@ -54,6 +56,8 @@ class DiscoverCategoryViewAllViewModel: ObservableObject {
 
     func refreshNews(idCategory: String) async {
         guard !isLoadMoreLoading else { return }
+        
+        isLoading = true
 
         do {
             resetCurrentPage()
@@ -66,6 +70,8 @@ class DiscoverCategoryViewAllViewModel: ObservableObject {
         } catch {
             print("Error: \(error.localizedDescription)")
         }
+        
+        isLoading = false
     }
 
     func loadMoreNews(idCategory: String) async {

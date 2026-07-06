@@ -10,7 +10,7 @@ import SwiftUI
 struct DiscoverView: View {
     @ObservedObject var viewModel: DiscoverViewModel
     @EnvironmentObject private var router: AppRouter
-
+    
     var body: some View {
         VStack (spacing: 0) {
             discoverHeader
@@ -82,9 +82,7 @@ struct DiscoverView: View {
             ForEach(viewModel.keywordSuggestions) { tag in
                 Button {
                     viewModel.selectedSearchText(text: tag.keyword)
-                    Task {
-                        await viewModel.searchDiscoverByKeyword(text: viewModel.searchText)
-                    }
+                    viewModel.searchDiscoverByKeyword(text: viewModel.searchText)
                 } label: {
                     Text(tag.keyword)
                         .font(.system(size: 13, weight: .medium))
@@ -120,11 +118,9 @@ struct DiscoverView: View {
                 .font(.system(size: 14))
                 .submitLabel(.search)
                 .onSubmit {
-                    Task {
-                        await viewModel.searchDiscoverByKeyword(
-                            text: viewModel.searchText
-                        )
-                    }
+                    viewModel.searchDiscoverByKeyword(
+                        text: viewModel.searchText
+                    )
                 }
             
             if !viewModel.searchText.isEmpty {

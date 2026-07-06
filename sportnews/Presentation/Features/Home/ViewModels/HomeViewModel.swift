@@ -22,6 +22,10 @@ final class HomeViewModel: ObservableObject {
     // Lịch thi đấu World Cup
     @Published var worldCupSchedule: WorldCupSchedule?
     
+    // Khai báo một Subject để nhận sự kiện mỗi khi user nhấn vào tab
+    private let selectTabPublisher = PassthroughSubject<SportCategory, Never>()
+    private var cancellebles = Set<AnyCancellable>()
+    
     var nearestUpcomingFixtureDay: FixtureScheduleDay? {
         worldCupSchedule?.nearestUpcomingDay()
     }
@@ -54,6 +58,43 @@ final class HomeViewModel: ObservableObject {
         self.getHomeNewsUseCase = getHomeNewsUseCase
         self.getHomeCategoriesUseCase = getHomeCategoriesUseCase
         self.getWorldCupFixturesUseCase = getWorldCupFixturesUseCase
+        
+        setupPipeline()
+    }
+    
+    private func setupPipeline() {
+        selectTabPublisher
+            .handleEvents(receiveOutput: {
+                [weak self] _ in
+                
+                self?.isLoading = true
+            })
+            .map{
+                [weak self] category -> AnyPublisher<[SportNews]?, Never> in
+                
+                guard let self = self else { return Just([]).eraseToAnyPublisher()}
+                
+                return Future { promise in
+                    Task {
+                        do {
+                            let result = try await self.getHomeNewsUseCase.execute(page: self.currentPage, category: category.id)
+                            promise(.success(result))
+                        } catch {
+                            promise(.success([]))
+                        }
+                    }
+                    
+                }
+                .eraseToAnyPublisher()
+            }
+            .switchToLatest()
+            .receive(on: DispatchQueue.main)
+            .sink {
+                [weak self] news in
+                self?.newsList = news ?? []
+                self?.isLoading = false
+            }
+            .store(in: &cancellebles)
     }
     
     func initializeHomeData() async {
@@ -110,17 +151,11 @@ final class HomeViewModel: ObservableObject {
         selectedCategory = category
         
         // Reset phân trang và tải lại từ đầu
-        isLoading = true
         currentPage = 1
         canLoadMore = true
         newsList = []
         
-        do {
-            self.newsList = try await getHomeNewsUseCase.execute(page: currentPage, category: category.id)
-        } catch {
-            print("🚨 Lỗi đổi danh mục: \(error)")
-        }
-        isLoading = false
+        selectTabPublisher.send(category)
     }
     
     // Hàm tải trang tiếp theo (Load More)
